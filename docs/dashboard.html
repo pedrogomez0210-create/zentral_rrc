@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>US Sector Rotation &mdash; RRG &middot; 22 Sep 2026</title>
+</head>
+<body>
+<style>
+:root {
+  color-scheme: light dark;
+  --s0:#1888d8;--s1:#38a088;--s2:#d08800;--s3:#609860;--s4:#804890;--s5:#b84838;--s6:#902040;--s7:#b05800;--s8:#4048b0;--s9:#884870;--s10:#0090c0;--s11:#42c6d2;--s12:#90c66c;--s13:#54c0fc;--s14:#60cc9c;--s15:#1896a2;
+  --ground:#faf9f7; --surface:#ffffff; --sunk:#f2f1ee;
+  --ink:#16181d; --ink2:#4d525b; --muted:#858b95;
+  --line:#e2e0dc; --line2:#cfccc6;
+  --leading:#2e7d4f; --improving:#3673b5; --weakening:#b8860b; --lagging:#b03a2e;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:5px;
+}
+@media (prefers-color-scheme:dark) {
+  :root {
+    --s0:#4888d8;--s1:#00b078;--s2:#d9a441;--s3:#80a048;--s4:#b48ead;--s5:#d07868;--s6:#b84840;--s7:#d06800;--s8:#5050b0;--s9:#b848a0;--s10:#4fc3e8;--s11:#963660;--s12:#a83c00;--s13:#9c3648;--s14:#4296c6;--s15:#c05a84;
+    --ground:#14161a; --surface:#1b1e24; --sunk:#101216;
+    --ink:#e6e8ec; --ink2:#a8aeb8; --muted:#767d88;
+    --line:#272b33; --line2:#363b45;
+    --leading:#4caf6a; --improving:#5b9bd5; --weakening:#d9a441; --lagging:#e06c5b;
+  }
+}
+:root[data-theme="dark"] {
+  --s0:#4888d8;--s1:#00b078;--s2:#d9a441;--s3:#80a048;--s4:#b48ead;--s5:#d07868;--s6:#b84840;--s7:#d06800;--s8:#5050b0;--s9:#b848a0;--s10:#4fc3e8;--s11:#963660;--s12:#a83c00;--s13:#9c3648;--s14:#4296c6;--s15:#c05a84;
+  --ground:#14161a; --surface:#1b1e24; --sunk:#101216;
+  --ink:#e6e8ec; --ink2:#a8aeb8; --muted:#767d88;
+  --line:#272b33; --line2:#363b45;
+  --leading:#4caf6a; --improving:#5b9bd5; --weakening:#d9a441; --lagging:#e06c5b;
+}
+:root[data-theme="light"] {
+  --s0:#1888d8;--s1:#38a088;--s2:#d08800;--s3:#609860;--s4:#804890;--s5:#b84838;--s6:#902040;--s7:#b05800;--s8:#4048b0;--s9:#884870;--s10:#0090c0;--s11:#42c6d2;--s12:#90c66c;--s13:#54c0fc;--s14:#60cc9c;--s15:#1896a2;
+  --ground:#faf9f7; --surface:#ffffff; --sunk:#f2f1ee;
+  --ink:#16181d; --ink2:#4d525b; --muted:#858b95;
+  --line:#e2e0dc; --line2:#cfccc6;
+  --leading:#2e7d4f; --improving:#3673b5; --weakening:#b8860b; --lagging:#b03a2e;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.55;
+  -webkit-text-size-adjust:100%; }
+.wrap { max-width:1080px; margin:0 auto; padding:28px 20px 64px;
+  display:flex; flex-direction:column; gap:22px; }
+
+header { display:flex; flex-direction:column; gap:10px;
+  border-bottom:1px solid var(--line); padding-bottom:18px; }
+.eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); }
+h1 { margin:0; font-size:clamp(24px,4.6vw,34px); font-weight:650;
+  letter-spacing:-.02em; text-wrap:balance; }
+.sub { color:var(--ink2); font-size:14px; max-width:62ch; margin:0; }
+.hrow { display:flex; align-items:center; justify-content:space-between;
+  gap:16px; flex-wrap:wrap; }
+
+.btn { display:inline-flex; align-items:center; gap:8px; flex:none;
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.08em;
+  text-transform:uppercase; padding:8px 14px; border-radius:var(--r);
+  border:1px solid var(--line2); background:var(--surface); color:var(--ink);
+  cursor:pointer; }
+.btn:hover:not(:disabled) { border-color:var(--muted); }
+.btn:focus-visible { outline:2px solid var(--improving); outline-offset:2px; }
+.btn:disabled { opacity:.55; cursor:default; }
+.btn-dot { width:6px; height:6px; border-radius:50%; background:var(--muted);
+  flex:none; }
+.btn[data-mode="live"] .btn-dot { background:var(--leading); }
+.btn[data-mode="busy"] .btn-dot { background:var(--weakening); }
+@media (prefers-reduced-motion:no-preference) {
+  .btn[data-mode="busy"] .btn-dot { animation:pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity:.25; } }
+}
+.updmsg { font-family:var(--mono); font-size:12px; color:var(--ink2);
+  background:var(--sunk); border:1px solid var(--line);
+  border-left:2px solid var(--muted); border-radius:var(--r);
+  padding:9px 12px; overflow-wrap:anywhere; }
+.updmsg.err { border-left-color:var(--lagging); color:var(--lagging); }
+.updmsg.ok { border-left-color:var(--leading); }
+.updmsg code { font-family:var(--mono); color:var(--ink);
+  background:var(--surface); border:1px solid var(--line); border-radius:3px;
+  padding:1px 5px; display:inline-block; margin-top:4px;
+  -webkit-user-select:all; user-select:all; }
+
+.strip { display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--line);
+  border-radius:var(--r); background:var(--surface); overflow:hidden; }
+.stat { flex:1 1 150px; padding:12px 16px; border-right:1px solid var(--line); }
+.stat:last-child { border-right:0; }
+.stat dt { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 3px; }
+.stat dd { margin:0; font-family:var(--mono); font-size:17px; font-weight:600;
+  font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+.stat dd small { font-size:12px; font-weight:400; color:var(--ink2); }
+
+.panel { background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r); }
+.panel-h { display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:13px 16px; border-bottom:1px solid var(--line);
+  flex-wrap:wrap; }
+.panel-h h2 { margin:0; font-size:13px; font-weight:600; letter-spacing:.04em;
+  text-transform:uppercase; font-family:var(--mono); color:var(--ink2); }
+
+.tabs { display:flex; gap:2px; background:var(--sunk); padding:2px;
+  border-radius:var(--r); }
+.tabs button { font-family:var(--mono); font-size:11.5px; letter-spacing:.08em;
+  text-transform:uppercase; padding:5px 13px; border:0; border-radius:3px;
+  background:transparent; color:var(--muted); cursor:pointer; }
+.tabs button[aria-selected="true"] { background:var(--surface); color:var(--ink);
+  box-shadow:0 1px 2px rgba(0,0,0,.14); }
+.tabs button:focus-visible { outline:2px solid var(--improving);
+  outline-offset:1px; }
+
+/* timeline */
+.tl { display:flex; align-items:center; gap:12px; padding:12px 16px;
+  border-bottom:1px solid var(--line); flex-wrap:wrap; }
+.tl-date { font-family:var(--mono); font-size:13px; font-weight:600;
+  font-variant-numeric:tabular-nums; min-width:104px; }
+.tl-back { font-family:var(--mono); font-size:10.5px; color:var(--weakening);
+  letter-spacing:.06em; text-transform:uppercase; }
+.tl-range { flex:1 1 220px; display:flex; align-items:center; }
+input[type=range] { width:100%; accent-color:var(--improving); height:22px;
+  background:transparent; cursor:pointer; }
+input[type=range]:focus-visible { outline:2px solid var(--improving);
+  outline-offset:3px; }
+.tl-btns { display:flex; gap:4px; }
+.tl-btns button { font-family:var(--mono); font-size:12px; min-width:30px;
+  padding:4px 8px; border:1px solid var(--line2); border-radius:3px;
+  background:var(--surface); color:var(--ink2); cursor:pointer; }
+.tl-btns button:hover:not(:disabled) { color:var(--ink);
+  border-color:var(--muted); }
+.tl-btns button:disabled { opacity:.4; cursor:default; }
+.tl-btns button:focus-visible { outline:2px solid var(--improving);
+  outline-offset:1px; }
+
+.chartwrap { padding:14px 12px 4px; }
+svg.rrg { width:100%; max-width:720px; height:auto; display:block;
+  margin:0 auto; }
+.q { opacity:.055; }
+@media (prefers-color-scheme:dark) { .q { opacity:.085; } }
+:root[data-theme="dark"] .q { opacity:.085; }
+:root[data-theme="light"] .q { opacity:.055; }
+.q-leading { fill:var(--leading); } .q-improving { fill:var(--improving); }
+.q-weakening { fill:var(--weakening); } .q-lagging { fill:var(--lagging); }
+.grid { stroke:var(--line); stroke-width:.6; stroke-dasharray:2 3; }
+.axis { stroke:var(--line2); stroke-width:.9; }
+.frame { fill:none; stroke:var(--line2); stroke-width:.7; }
+.tick { fill:var(--muted); font-family:var(--mono); font-size:10px;
+  font-variant-numeric:tabular-nums; }
+.qlabel { fill:var(--muted); font-family:var(--mono); font-size:9.5px;
+  letter-spacing:.16em; opacity:.75; }
+.axlabel { fill:var(--muted); font-family:var(--mono); font-size:9.5px;
+  letter-spacing:.14em; }
+.trail { fill:none; stroke-width:1.5; stroke-opacity:.55;
+  stroke-linejoin:round; stroke-linecap:round; }
+.bub { stroke:var(--surface); stroke-width:1.5; }
+.tk { fill:var(--ink); font-family:var(--mono); font-size:10.5px;
+  font-weight:600; letter-spacing:.02em;
+  paint-order:stroke fill; stroke:var(--surface); stroke-width:2.6px;
+  stroke-linejoin:round; }
+
+.rot { display:inline-flex; align-items:center; gap:6px; }
+.rot svg { width:15px; height:15px; flex:none; }
+.rot circle { fill:none; stroke:var(--line2); stroke-width:.8;
+  stroke-dasharray:2 2.5; }
+.rot path { fill:none; stroke:var(--muted); stroke-width:1.4;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+.tablewrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:13.5px; }
+th, td { padding:8px 12px; text-align:left; border-bottom:1px solid var(--line);
+  white-space:nowrap; }
+thead th { font-family:var(--mono); font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); font-weight:500;
+  border-bottom:1px solid var(--line2); }
+tbody tr:last-child td { border-bottom:0; }
+.num { text-align:right; font-family:var(--mono);
+  font-variant-numeric:tabular-nums; }
+.c-tk b { font-family:var(--mono); font-size:12.5px; }
+.c-name { color:var(--ink2); margin-left:8px; font-size:12.5px; }
+.swatch { display:inline-block; width:9px; height:9px; border-radius:2px;
+  margin-right:8px; vertical-align:baseline; }
+.dir { letter-spacing:.02em; color:var(--ink2); }
+.conv-high { color:var(--leading); font-weight:600; }
+.conv-low { color:var(--muted); }
+
+.pill { display:inline-block; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.06em; text-transform:uppercase; padding:2px 8px;
+  border-radius:99px; border:1px solid; }
+.p-leading { color:var(--leading); border-color:var(--leading); }
+.p-improving { color:var(--improving); border-color:var(--improving); }
+.p-weakening { color:var(--weakening); border-color:var(--weakening); }
+.p-lagging { color:var(--lagging); border-color:var(--lagging); }
+
+.cards { display:none; }
+.card { padding:12px 14px; border-bottom:1px solid var(--line); }
+.card:last-child { border-bottom:0; }
+.card-h { display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+.card-h b { font-family:var(--mono); font-size:13px; }
+.card-h .pill { margin-left:auto; }
+.card-d { display:grid; grid-template-columns:repeat(5,1fr); gap:6px;
+  margin:9px 0 0; }
+.card-d dt { font-family:var(--mono); font-size:9.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); }
+.card-d dd { margin:1px 0 0; font-family:var(--mono); font-size:13px;
+  font-variant-numeric:tabular-nums; }
+
+.agrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(178px,1fr));
+  gap:8px; padding:14px 16px; }
+.ag { display:flex; flex-direction:column; gap:4px; font-family:var(--mono);
+  padding:8px 11px; border-radius:var(--r);
+  background:var(--sunk); border-left:2px solid var(--line2); }
+.ag-top { display:flex; align-items:baseline; gap:8px; }
+.ag-top b { font-size:12.5px; }
+.ag-v { margin-left:auto; font-size:9.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); }
+.ag-tf { display:flex; align-items:baseline; gap:5px; font-size:11px;
+  color:var(--ink2); flex-wrap:wrap; }
+.ag-tf span { font-size:9px; letter-spacing:.06em; color:var(--muted);
+  border:1px solid var(--line2); border-radius:2px; padding:0 3px; }
+.ag-aligned { border-left-color:var(--leading); }
+.ag-aligned .ag-v { color:var(--leading); }
+.ag-partial { border-left-color:var(--weakening); }
+.ag-partial .ag-v { color:var(--weakening); }
+.ag-diverging { border-left-color:var(--lagging); }
+.ag-diverging .ag-v { color:var(--lagging); }
+
+ul.alerts { list-style:none; margin:0; padding:6px 0; max-height:420px;
+  overflow-y:auto; }
+.al { display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;
+  padding:8px 16px; font-size:13px; border-left:2px solid transparent; }
+.al-d { font-family:var(--mono); font-size:11px; color:var(--muted);
+  font-variant-numeric:tabular-nums; }
+.al-tf { font-family:var(--mono); font-size:9.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); border:1px solid var(--line2);
+  border-radius:3px; padding:0 5px; }
+.al-t { font-family:var(--mono); font-size:12px; font-weight:600; }
+.al-b { color:var(--ink2); flex:1 1 200px; }
+.al-cross { border-left-color:var(--improving); background:var(--sunk); }
+.al-cross .al-b { color:var(--ink); }
+.al-conf { border-left-color:var(--leading); }
+.muted { color:var(--muted); }
+
+.legend { display:flex; flex-wrap:wrap; gap:6px 18px; padding:0 16px 14px;
+  font-family:var(--mono); font-size:11px; color:var(--muted); }
+
+.exp { display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+  padding:12px 16px; border-top:1px solid var(--line); }
+.exp-l { font-family:var(--mono); font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); margin-right:2px; }
+.exp button { font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  padding:6px 11px; border:1px solid var(--line2); border-radius:3px;
+  background:var(--surface); color:var(--ink2); cursor:pointer; }
+.exp button:hover:not(:disabled) { color:var(--ink); border-color:var(--muted); }
+.exp button:disabled { opacity:.5; cursor:default; }
+.exp button:focus-visible { outline:2px solid var(--improving);
+  outline-offset:1px; }
+.exp-scale { display:inline-flex; align-items:center; gap:5px;
+  font-family:var(--mono); font-size:11px; color:var(--muted); }
+.exp-scale select { font-family:var(--mono); font-size:11px; padding:4px 6px;
+  border:1px solid var(--line2); border-radius:3px; background:var(--surface);
+  color:var(--ink2); }
+.exp-msg { font-family:var(--mono); font-size:11px; color:var(--leading); }
+.exp-msg.err { color:var(--lagging); }
+.exp-out:not(:empty) { padding:0 16px 16px; display:flex;
+  flex-direction:column; gap:10px; align-items:flex-start; }
+.exp-hint { margin:0; font-size:13px; color:var(--ink2); max-width:70ch;
+  background:var(--sunk); border-left:2px solid var(--improving);
+  border-radius:var(--r); padding:9px 12px; }
+.exp-img { max-width:100%; height:auto; border:1px solid var(--line2);
+  border-radius:var(--r); display:block; }
+.exp-cap, .exp-link { font-family:var(--mono); font-size:11px;
+  color:var(--muted); margin:0; }
+.exp-link { color:var(--improving); }
+.exp-close { font-family:var(--mono); font-size:11px; padding:5px 10px;
+  border:1px solid var(--line2); border-radius:3px; background:var(--surface);
+  color:var(--ink2); cursor:pointer; }
+.exp-close:hover { color:var(--ink); border-color:var(--muted); }
+footer { color:var(--muted); font-size:12.5px; border-top:1px solid var(--line);
+  padding-top:16px; }
+footer code { font-family:var(--mono); font-size:12px; color:var(--ink2); }
+
+@media (max-width:720px) {
+  .wrap { padding:20px 14px 48px; gap:18px; }
+  .tablewrap { display:none; }
+  .cards { display:block; }
+  .stat { flex:1 1 50%; border-bottom:1px solid var(--line); }
+  .chartwrap { padding:10px 6px 0; }
+  .tl { gap:9px; }
+}
+@media (prefers-reduced-motion:no-preference) {
+  .panel, .strip { animation:rise .4s ease-out both; }
+  @keyframes rise { from { opacity:0; transform:translateY(6px); } }
+}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Relative Rotation Graph &middot; vs SPY
+    &middot; <span id="hdr-date">&mdash;</span></div>
+  <div class="hrow">
+    <h1>US Sector Rotation</h1>
+    <button id="upd" class="btn" type="button" disabled>
+      <span class="btn-dot" aria-hidden="true"></span>
+      <span id="upd-label">Checking&#8230;</span></button>
+  </div>
+  <p class="sub">Where capital is rotating across 11
+  GICS sectors &mdash; position measured against SPY, and whether
+  that position is still accelerating. Drag the timeline to replay any past
+  period.</p>
+  <div id="upd-msg" class="updmsg" hidden></div>
+</header>
+
+<dl class="strip">
+  <div class="stat"><dt>Showing</dt><dd id="st-date">&mdash;</dd></div>
+  <div class="stat"><dt>Leading</dt><dd><span id="st-lead">&mdash;</span>
+    <small id="st-of"></small></dd></div>
+  <div class="stat"><dt>Quadrant changes</dt><dd><span id="st-cross">&mdash;</span>
+    <small>to date</small></dd></div>
+  <div class="stat"><dt>Benchmark</dt><dd>SPY</dd></div>
+</dl>
+
+<section class="panel">
+  <div class="panel-h">
+    <h2>Rotation map</h2>
+    <div class="tabs" role="tablist" aria-label="Timeframe"><button role="tab" aria-selected="true" data-go="weekly">Weekly</button><button role="tab" aria-selected="false" data-go="daily">Daily</button></div>
+  </div>
+  <div class="tl">
+    <div>
+      <div class="tl-date" id="tl-date">&mdash;</div>
+      <div class="tl-back" id="tl-back"></div>
+    </div>
+    <div class="tl-range">
+      <input type="range" id="tl" min="0" max="0" value="0" step="1"
+             aria-label="Timeline: choose the date to display">
+    </div>
+    <div class="tl-btns">
+      <button type="button" id="tl-prev" title="Previous period"
+        aria-label="Previous period">&#8592;</button>
+      <button type="button" id="tl-next" title="Next period"
+        aria-label="Next period">&#8594;</button>
+      <button type="button" id="tl-last" title="Jump to latest">Latest</button>
+    </div>
+  </div>
+  <div class="chartwrap"><div id="chart"></div></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Sector</th><th>Quadrant</th><th class="num">Ratio</th>
+    <th class="num">Mom</th>
+    <th class="num" title="RRG units moved per bar over the last 4 bars">Vel</th>
+    <th class="num" title="net move / path length over 8 bars &#8212; 1.00 is a dead-straight tail">Straight</th>
+    <th class="num">Dir</th></tr></thead>
+    <tbody id="tbody"></tbody></table></div>
+  <div class="cards" id="cards"></div>
+  <div class="legend">
+    <span class="rot"><svg viewBox="0 0 22 22" aria-hidden="true"
+      ><circle cx="11" cy="11" r="8"/><path d="M11 3 A8 8 0 1 1 3 11"/><path
+      class="tip" d="M1 7 l2 4 l4 -2"/></svg>Sectors rotate clockwise</span>
+    <span>Bubble = share of universe dollar volume</span>
+    <span>Tail = 12 periods</span>
+    <span>Vel = units/bar &middot; Straight = 1.00 is a straight tail</span></div>
+  <div class="exp">
+    <span class="exp-l">Export for report</span>
+    <button type="button" data-exp="report"
+      title="Chart + ranked table, 16:9 &#8212; drops straight into a slide or video frame">Figure PNG</button>
+    <button type="button" data-exp="chart"
+      title="The chart alone, portrait">Chart PNG</button>
+    <button type="button" data-exp="svg"
+      title="The 16:9 figure as vector &#8212; scales to any size, editable in Illustrator/After Effects">Figure SVG</button>
+    <button type="button" data-exp="copy"
+      title="Copy the 16:9 figure to the clipboard">Copy figure</button>
+    <span class="exp-scale">
+      <label for="exp-x">at</label>
+      <select id="exp-x"><option value="1">1&times;</option>
+        <option value="2" selected>2&times;</option>
+        <option value="3">3&times;</option></select>
+    </span>
+    <span class="exp-msg" id="exp-msg" role="status"></span>
+  </div>
+  <div class="exp-out" id="exp-out"></div>
+</section>
+
+<section class="panel" style="display:none">
+  <div class="panel-h"><h2>Timeframe agreement</h2>
+    <span class="eyebrow">weekly / daily</span></div>
+  <div class="agrid" id="agrid"></div>
+</section>
+
+<section class="panel" style="display:none">
+  <div class="panel-h"><h2>Rotation alerts</h2>
+    <span class="eyebrow" id="al-note"></span></div>
+  <ul class="alerts" id="alerts"></ul>
+</section>
+
+<footer>Generated from the local rrg-kit &mdash; regenerate with
+<code>python3 update.py &amp;&amp; python3 make_dashboard.py</code>.
+Source: Yahoo Finance. Standard public approximation of JdK RS-Ratio /
+RS-Momentum; sector rotation is context, not a trade trigger.</footer>
+</div>
+
+<script>
+var D = {"frames":{"weekly":{"label":"Weekly","dates":["2025-04-04","2025-04-11","2025-04-18","2025-04-25","2025-05-02","2025-05-09","2025-05-16","2025-05-23","2025-05-30","2025-06-06","2025-06-13","2025-06-20","2025-06-27","2025-07-04","2025-07-11","2025-07-18","2025-07-25","2025-08-01","2025-08-08","2025-08-15","2025-08-22","2025-08-29","2025-09-05","2025-09-12","2025-09-19","2025-09-26","2025-10-03","2025-10-10","2025-10-17","2025-10-24","2025-10-31","2025-11-07","2025-11-14","2025-11-21","2025-11-28","2025-12-05","2025-12-12","2025-12-19","2025-12-26","2026-01-02","2026-01-09","2026-01-16","2026-01-23","2026-01-30","2026-02-06","2026-02-13","2026-02-20","2026-02-27","2026-03-06","2026-03-13","2026-03-20","2026-03-27","2026-04-03","2026-04-10","2026-04-17","2026-04-24","2026-05-01","2026-05-08","2026-05-15","2026-05-22","2026-05-29","2026-06-05","2026-06-12","2026-06-19","2026-06-26","2026-07-03","2026-07-10","2026-07-17","2026-07-24","2026-07-31","2026-08-07","2026-08-14","2026-08-21","2026-08-28","2026-09-04","2026-09-11","2026-09-18","2026-09-22"],"dlabels":["04 Apr 2025","11 Apr 2025","18 Apr 2025","25 Apr 2025","02 May 2025","09 May 2025","16 May 2025","23 May 2025","30 May 2025","06 Jun 2025","13 Jun 2025","20 Jun 2025","27 Jun 2025","04 Jul 2025","11 Jul 2025","18 Jul 2025","25 Jul 2025","01 Aug 2025","08 Aug 2025","15 Aug 2025","22 Aug 2025","29 Aug 2025","05 Sep 2025","12 Sep 2025","19 Sep 2025","26 Sep 2025","03 Oct 2025","10 Oct 2025","17 Oct 2025","24 Oct 2025","31 Oct 2025","07 Nov 2025","14 Nov 2025","21 Nov 2025","28 Nov 2025","05 Dec 2025","12 Dec 2025","19 Dec 2025","26 Dec 2025","02 Jan 2026","09 Jan 2026","16 Jan 2026","23 Jan 2026","30 Jan 2026","06 Feb 2026","13 Feb 2026","20 Feb 2026","27 Feb 2026","06 Mar 2026","13 Mar 2026","20 Mar 2026","27 Mar 2026","03 Apr 2026","10 Apr 2026","17 Apr 2026","24 Apr 2026","01 May 2026","08 May 2026","15 May 2026","22 May 2026","29 May 2026","05 Jun 2026","12 Jun 2026","19 Jun 2026","26 Jun 2026","03 Jul 2026","10 Jul 2026","17 Jul 2026","24 Jul 2026","31 Jul 2026","07 Aug 2026","14 Aug 2026","21 Aug 2026","28 Aug 2026","04 Sep 2026","11 Sep 2026","18 Sep 2026","22 Sep 2026"],"series":[{"t":"XLK","name":"Technology","i":0,"pts":[[97.92,100.24,0.1041,0.2381],[98.07,100.7,0.1033,0.2802],[98.11,100.87,0.1029,0.2817],[98.54,101.02,0.1029,0.3097],[99.26,101.43,0.1024,0.3177],[99.78,101.62,0.1018,0.3176],[100.78,102.26,0.1017,0.3428],[101.25,101.94,0.1027,0.347],[101.53,101.34,0.1038,0.3448],[101.74,100.94,0.1054,0.3466],[101.66,99.99,0.1055,0.345],[101.67,99.52,0.1047,0.3396],[101.68,99.18,0.1054,0.3456],[101.61,98.87,0.1065,0.3446],[101.5,98.81,0.1078,0.3423],[101.47,98.83,0.109,0.3345],[101.37,98.79,0.1097,0.3282],[101.3,98.89,0.1106,0.3276],[101.32,99.12,0.1108,0.3293],[101.16,99.14,0.1122,0.3213],[100.93,99.14,0.1155,0.2441],[100.63,98.98,0.1192,0.2174],[100.13,98.39,0.124,0.2072],[99.94,98.19,0.1284,0.1795],[100.4,99.61,0.1317,0.1766],[101.23,102.08,0.1355,0.1771],[102.31,103.02,0.1391,0.14],[102.48,102.4,0.1425,0.131],[102.27,101.49,0.1476,0.1321],[102.15,100.6,0.1497,0.1312],[102.1,99.64,0.1538,0.1323],[101.78,99.25,0.1575,0.1566],[101.48,99.23,0.1615,0.1462],[100.83,98.9,0.1682,0.17],[100.15,98.6,0.1705,0.183],[100.01,98.84,0.1712,0.184],[99.65,98.87,0.171,0.1886],[99.78,99.39,0.1724,0.1844],[99.81,99.86,0.1745,0.1791],[99.33,99.69,0.1763,0.1818],[99.19,99.97,0.1737,0.18],[99.05,99.91,0.1724,0.1804],[98.97,100.0,0.1705,0.1809],[98.8,100.76,0.1687,0.1772],[98.39,100.35,0.1704,0.175],[98.04,99.99,0.1689,0.176],[97.68,99.52,0.1663,0.1734],[97.7,99.86,0.1618,0.1714],[98.16,101.45,0.1545,0.1676],[98.58,102.4,0.1529,0.1592],[99.03,102.74,0.15,0.153],[99.32,102.28,0.1467,0.1511],[99.66,101.74,0.1432,0.1714],[100.04,101.43,0.1362,0.1689],[101.04,101.61,0.1349,0.199],[102.46,101.99,0.1357,0.2037],[102.66,101.58,0.1362,0.1996],[102.72,101.17,0.1364,0.2341],[102.44,100.23,0.1381,0.2342],[102.18,98.98,0.1393,0.2313],[102.13,98.67,0.1414,0.2429],[101.82,98.34,0.1436,0.2658],[101.66,98.52,0.1474,0.2653],[101.57,98.78,0.1478,0.2652],[101.3,98.8,0.1455,0.2814],[101.1,99.03,0.1443,0.2798],[100.92,99.14,0.1448,0.2806],[100.49,99.05,0.1456,0.2981],[100.15,99.15,0.1479,0.2962],[99.79,99.13,0.1486,0.2961],[99.43,99.04,0.1493,0.3068],[99.49,99.57,0.1505,0.2928],[99.33,100.15,0.1515,0.3016],[99.54,102.02,0.1523,0.2967],[99.57,102.41,0.1513,0.2745],[99.65,101.94,0.1497,0.271],[100.24,102.42,0.1492,0.271],[101.13,102.41,0.1488,0.2454]]},{"t":"XLF","name":"Financials","i":1,"pts":[[101.48,100.01,0.2107,0.236],[101.44,99.75,0.209,0.2528],[101.46,99.39,0.21,0.2516],[101.15,99.12,0.2085,0.2555],[101.13,99.07,0.2083,0.2607],[101.23,99.35,0.2072,0.2581],[100.72,98.72,0.2059,0.2629],[100.42,98.75,0.2051,0.268],[99.9,97.85,0.2028,0.2648],[98.91,97.02,0.1993,0.2476],[97.88,97.47,0.1963,0.2506],[97.7,98.12,0.1926,0.2502],[97.83,98.93,0.1892,0.2561],[98.17,100.26,0.186,0.2586],[98.47,101.49,0.1828,0.2584],[98.6,101.6,0.1792,0.255],[98.7,101.43,0.1727,0.2358],[98.55,100.95,0.1678,0.2441],[98.44,100.6,0.1648,0.2429],[98.34,100.42,0.1625,0.2431],[98.42,100.37,0.1588,0.1698],[98.73,100.67,0.1536,0.152],[98.93,100.8,0.1495,0.1565],[99.08,100.87,0.1464,0.1525],[98.85,100.51,0.1445,0.1443],[98.48,99.59,0.1428,0.1448],[98.34,98.53,0.1398,0.1362],[98.21,98.05,0.1393,0.1357],[97.95,98.36,0.1418,0.1332],[97.84,98.94,0.1425,0.1355],[97.75,99.15,0.1435,0.1303],[98.02,100.03,0.1437,0.1303],[98.31,101.03,0.1436,0.1195],[98.57,101.49,0.1434,0.1154],[98.92,101.8,0.1435,0.1225],[99.01,101.34,0.1424,0.1224],[99.48,101.43,0.1454,0.125],[99.91,101.5,0.1464,0.1065],[100.56,101.59,0.1473,0.1086],[101.2,101.78,0.1475,0.1107],[101.31,101.21,0.1468,0.1083],[101.03,100.41,0.1479,0.115],[100.13,98.66,0.1487,0.119],[99.31,97.6,0.1492,0.1175],[98.91,97.73,0.1471,0.1192],[98.34,98.01,0.1478,0.1416],[98.35,98.78,0.1487,0.1444],[98.18,99.27,0.1514,0.1405],[98.04,99.51,0.1476,0.1428],[98.16,99.98,0.1472,0.1476],[98.4,100.18,0.1469,0.147],[98.7,100.53,0.1466,0.1485],[98.93,100.83,0.1465,0.1614],[99.18,101.06,0.1465,0.1653],[99.08,100.94,0.1462,0.1656],[98.66,100.46,0.1467,0.1679],[98.24,99.93,0.1436,0.1638],[97.78,99.28,0.1429,0.1647],[97.66,99.14,0.1422,0.1612],[97.89,99.55,0.1411,0.1635],[97.93,99.94,0.1419,0.1613],[98.4,100.97,0.1404,0.16],[98.88,101.46,0.14,0.1583],[99.22,101.35,0.1405,0.1581],[99.89,101.68,0.1411,0.1563],[100.42,101.49,0.1412,0.1457],[100.75,101.23,0.141,0.1444],[101.38,101.33,0.1396,0.1392],[101.71,100.94,0.1411,0.1347],[101.71,100.47,0.1413,0.1181],[101.56,100.0,0.1404,0.118],[101.27,99.09,0.1409,0.1074],[101.0,98.35,0.142,0.1037],[100.8,98.19,0.1427,0.0999],[100.79,98.44,0.1435,0.0908],[100.69,98.77,0.1443,0.0878],[100.31,98.85,0.1465,0.0992],[99.17,98.4,0.1482,0.1003]]},{"t":"XLV","name":"Healthcare","i":2,"pts":[[101.85,98.04,0.1106,0.1549],[101.54,97.89,0.1107,0.1536],[101.3,98.19,0.1106,0.1486],[100.91,98.38,0.1107,0.1496],[100.16,98.27,0.1113,0.1455],[99.4,98.31,0.1116,0.1567],[98.35,98.21,0.1158,0.1555],[97.89,98.48,0.1175,0.1583],[97.87,99.03,0.1178,0.1611],[98.07,99.65,0.1181,0.1626],[98.45,100.65,0.1184,0.1564],[98.64,101.33,0.1189,0.1568],[98.74,101.53,0.1178,0.1597],[98.81,101.39,0.1193,0.161],[98.81,101.02,0.1215,0.1594],[98.77,100.76,0.1229,0.1591],[98.82,100.66,0.1262,0.1711],[98.78,100.52,0.1287,0.1757],[98.56,100.3,0.1312,0.1738],[98.62,100.28,0.1331,0.1915],[98.69,100.15,0.1354,0.1635],[98.88,100.22,0.1371,0.1629],[99.35,101.17,0.1364,0.162],[99.39,101.21,0.1366,0.1594],[99.13,100.32,0.1357,0.1596],[98.81,99.12,0.1347,0.1445],[99.09,98.78,0.1342,0.1789],[99.82,100.8,0.1319,0.1782],[101.17,102.99,0.1293,0.1771],[102.27,102.93,0.128,0.1781],[101.59,101.62,0.1267,0.1795],[101.42,100.71,0.127,0.1732],[101.95,99.91,0.1287,0.1805],[102.48,99.34,0.1296,0.1812],[102.52,99.95,0.1295,0.1815],[102.11,99.67,0.1308,0.183],[101.71,98.88,0.1317,0.1775],[101.23,98.28,0.131,0.1606],[100.94,98.33,0.1297,0.1583],[100.96,98.77,0.1278,0.1473],[100.88,99.05,0.128,0.147],[100.71,99.32,0.1275,0.1482],[100.71,99.62,0.1276,0.1483],[100.4,99.48,0.1265,0.1531],[100.38,99.65,0.1257,0.1529],[100.75,100.45,0.1245,0.1512],[100.72,100.53,0.1215,0.1141],[102.52,102.5,0.1219,0.1105],[101.8,101.64,0.122,0.1384],[100.85,100.35,0.1219,0.1402],[100.17,99.69,0.1223,0.1473],[98.9,97.5,0.1228,0.1467],[98.44,98.07,0.1203,0.1383],[97.7,98.47,0.1174,0.1348],[97.36,98.83,0.1145,0.1317],[97.18,99.53,0.1118,0.1334],[97.38,99.95,0.1102,0.1336],[97.59,100.48,0.1094,0.1337],[97.89,100.8,0.1099,0.1336],[98.27,101.04,0.1094,0.1452],[98.49,100.98,0.108,0.1436],[98.92,101.17,0.1089,0.1485],[99.26,101.2,0.1088,0.1476],[99.34,100.97,0.1089,0.1519],[99.98,101.07,0.11,0.1946],[100.46,100.97,0.1116,0.197],[100.83,100.87,0.1132,0.1993],[101.56,101.2,0.1136,0.1966],[101.61,100.72,0.1142,0.1802],[101.41,99.88,0.1154,0.1763],[101.27,98.73,0.1175,0.168],[101.07,97.41,0.1163,0.1655],[101.15,97.94,0.1191,0.1727],[101.15,98.49,0.12,0.1785],[101.31,99.0,0.1214,0.1787],[101.23,99.25,0.1228,0.1814],[100.83,98.86,0.1226,0.1822],[100.66,98.85,0.123,0.1794]]},{"t":"XLY","name":"Cons. Discretionary","i":3,"pts":[[98.51,102.13,0.0733,0.2114],[98.81,102.07,0.0739,0.2185],[99.02,101.68,0.0741,0.2157],[99.23,101.39,0.0739,0.2297],[99.21,100.96,0.0734,0.2317],[99.4,100.78,0.0718,0.2297],[99.93,100.9,0.0721,0.2623],[100.31,100.9,0.0723,0.2656],[101.03,101.2,0.073,0.2649],[101.12,101.01,0.074,0.2571],[100.46,100.03,0.0743,0.2569],[99.66,98.57,0.0744,0.256],[99.05,97.31,0.0752,0.2616],[98.91,97.74,0.0756,0.2621],[98.89,98.55,0.0749,0.2546],[98.96,99.32,0.0758,0.2538],[98.85,99.78,0.0775,0.2402],[98.58,99.76,0.0789,0.2379],[98.52,99.78,0.0796,0.2425],[98.81,100.01,0.08,0.2436],[99.46,100.65,0.0813,0.2041],[100.36,101.5,0.0831,0.2016],[101.49,102.13,0.0872,0.194],[102.12,102.02,0.089,0.1729],[101.95,101.33,0.0905,0.1722],[101.76,100.61,0.092,0.1736],[101.06,99.44,0.0935,0.136],[100.17,98.47,0.0941,0.1406],[99.5,98.29,0.0945,0.1433],[98.87,98.31,0.0948,0.1423],[98.75,98.78,0.0958,0.1418],[98.86,99.32,0.097,0.1456],[98.44,99.48,0.0979,0.1402],[98.23,99.7,0.0989,0.1453],[98.29,99.83,0.0998,0.1632],[98.49,99.94,0.1004,0.1638],[99.05,100.59,0.0985,0.1634],[99.75,101.34,0.0987,0.1473],[100.2,101.7,0.0988,0.1391],[100.23,101.54,0.0992,0.1458],[100.73,101.3,0.0988,0.1636],[100.66,100.71,0.0962,0.1662],[101.06,100.57,0.0918,0.1652],[101.27,100.58,0.0888,0.1664],[99.89,98.87,0.0858,0.1709],[98.96,98.19,0.0834,0.1723],[98.1,97.71,0.0817,0.1729],[97.96,97.98,0.08,0.1614],[98.2,99.04,0.0785,0.1601],[98.2,99.6,0.0772,0.165],[98.2,100.12,0.0757,0.1681],[98.29,100.32,0.0741,0.1681],[98.29,100.27,0.0729,0.1716],[98.49,100.49,0.0709,0.1827],[98.89,100.86,0.0706,0.1967],[99.0,100.89,0.0694,0.1973],[99.1,100.97,0.0703,0.1968],[98.94,100.76,0.0693,0.1974],[98.12,99.84,0.0685,0.2029],[97.89,99.53,0.0681,0.2007],[97.94,99.3,0.0665,0.1843],[97.91,98.99,0.0664,0.1983],[98.23,100.28,0.0663,0.1998],[98.31,100.63,0.0663,0.1987],[98.41,100.66,0.0667,0.1974],[98.71,101.04,0.0673,0.1997],[98.78,100.64,0.068,0.199],[98.88,100.62,0.0682,0.2004],[98.56,100.11,0.0689,0.2145],[98.61,99.85,0.0693,0.2298],[98.7,99.95,0.07,0.2282],[98.52,99.62,0.0704,0.2274],[99.12,100.9,0.0704,0.2258],[98.91,100.37,0.0694,0.217],[98.42,99.09,0.0688,0.1916],[98.22,98.62,0.069,0.1921],[97.81,97.35,0.0678,0.1935],[97.77,98.16,0.0669,0.1936]]},{"t":"XLP","name":"Cons. Staples","i":4,"pts":[[102.01,99.43,0.0849,0.1267],[101.93,99.15,0.0854,0.127],[102.0,99.31,0.0861,0.1278],[101.69,99.12,0.0872,0.1284],[101.15,98.67,0.0883,0.1289],[100.8,98.58,0.0898,0.1225],[100.08,98.33,0.0904,0.1241],[99.69,98.53,0.0914,0.1225],[99.35,98.84,0.0924,0.1149],[98.83,98.91,0.0931,0.1176],[98.67,99.32,0.0932,0.1188],[98.53,99.59,0.0935,0.1172],[98.33,99.86,0.0941,0.1171],[98.41,100.8,0.0946,0.1187],[98.48,101.2,0.0948,0.1182],[98.51,101.38,0.0933,0.1169],[98.59,101.68,0.0931,0.1175],[98.62,101.49,0.0917,0.101],[98.73,101.35,0.0919,0.1098],[98.76,101.16,0.0914,0.107],[98.88,101.06,0.092,0.0983],[98.81,100.82,0.0939,0.0983],[98.68,100.4,0.0928,0.0936],[98.5,99.94,0.0909,0.0921],[98.15,98.82,0.0901,0.0926],[97.97,98.4,0.0888,0.0934],[97.9,98.39,0.0869,0.09],[98.13,99.39,0.0856,0.0898],[98.46,100.98,0.084,0.093],[98.63,101.53,0.0837,0.0914],[98.58,101.43,0.0838,0.1059],[98.53,100.8,0.0838,0.1065],[98.49,100.09,0.0834,0.1074],[98.75,100.29,0.0809,0.1026],[99.1,101.05,0.08,0.1048],[99.21,101.22,0.0805,0.1062],[99.41,101.42,0.0805,0.1074],[99.21,100.56,0.0796,0.105],[98.99,99.43,0.0791,0.0932],[99.03,99.09,0.0786,0.0934],[98.86,98.11,0.0781,0.099],[99.71,100.45,0.0798,0.1097],[101.41,102.92,0.0805,0.1104],[102.65,102.8,0.0807,0.1096],[102.98,102.32,0.0828,0.1322],[102.73,101.31,0.085,0.1303],[102.35,99.84,0.087,0.1361],[102.21,98.93,0.0879,0.1384],[101.78,98.61,0.0893,0.1609],[101.38,98.69,0.0882,0.1619],[101.1,98.9,0.0877,0.1653],[100.89,98.97,0.0876,0.1658],[100.68,99.15,0.0879,0.1658],[100.29,99.21,0.0896,0.1656],[99.73,99.11,0.089,0.1638],[98.81,98.9,0.0878,0.1623],[98.2,98.88,0.0879,0.1622],[97.94,99.05,0.0877,0.1611],[98.18,99.58,0.0873,0.161],[98.37,100.94,0.0869,0.16],[98.38,102.07,0.086,0.1634],[98.58,102.2,0.0837,0.1541],[98.8,101.76,0.0827,0.1595],[98.86,101.37,0.0823,0.1667],[99.29,101.49,0.0799,0.1481],[99.47,101.26,0.0779,0.145],[99.35,100.86,0.0768,0.1432],[99.74,100.99,0.0759,0.139],[99.64,100.48,0.0741,0.119],[99.74,100.3,0.0756,0.1185],[99.59,100.14,0.0753,0.0965],[98.75,98.28,0.0748,0.0964],[98.46,97.77,0.0748,0.0966],[98.04,97.68,0.0745,0.0975],[98.3,98.48,0.0743,0.0995],[98.22,99.43,0.075,0.1016],[97.97,99.57,0.0742,0.1006],[97.93,100.06,0.074,0.1011]]},{"t":"XLI","name":"Industrials","i":5,"pts":[[101.71,100.7,0.11,0.199],[101.64,99.8,0.1113,0.2246],[101.73,98.53,0.1108,0.2233],[101.5,98.45,0.1117,0.228],[101.55,98.99,0.1115,0.2369],[101.66,99.28,0.1112,0.2334],[101.61,99.25,0.1102,0.2487],[101.79,99.69,0.1101,0.2515],[101.76,99.62,0.1122,0.2508],[101.6,99.34,0.114,0.2408],[101.28,99.13,0.1157,0.24],[100.89,98.79,0.1171,0.2377],[100.52,98.6,0.1179,0.2423],[100.18,98.4,0.1184,0.2432],[100.23,98.84,0.1175,0.2397],[100.35,99.8,0.1175,0.2396],[100.75,101.16,0.1191,0.2383],[100.91,101.7,0.1204,0.2425],[100.15,100.37,0.121,0.2425],[98.55,98.1,0.1208,0.2408],[97.78,97.58,0.1206,0.1723],[97.74,97.96,0.1192,0.152],[97.88,98.93,0.1194,0.153],[97.99,100.49,0.1205,0.1496],[97.87,101.02,0.1208,0.1383],[98.01,101.06,0.1201,0.1384],[98.26,101.01,0.1199,0.1116],[98.5,100.98,0.1209,0.1173],[98.65,101.05,0.1197,0.1169],[98.75,100.91,0.119,0.1188],[98.72,100.69,0.1174,0.1145],[98.78,100.59,0.1167,0.1168],[98.73,100.43,0.1159,0.1072],[98.71,100.27,0.1166,0.1072],[98.62,100.08,0.1166,0.1151],[98.49,99.57,0.1165,0.1147],[98.94,100.03,0.1152,0.111],[99.16,100.58,0.114,0.0958],[99.7,102.05,0.113,0.0967],[100.84,102.97,0.1124,0.0964],[101.51,102.33,0.1129,0.0999],[102.71,102.42,0.1125,0.107],[102.67,101.58,0.1127,0.1105],[102.38,100.37,0.1118,0.1106],[102.44,99.86,0.1112,0.1286],[102.28,98.82,0.1115,0.1283],[102.22,98.88,0.1129,0.1291],[102.13,99.05,0.1115,0.1152],[101.77,98.8,0.1126,0.1386],[101.37,98.71,0.1132,0.1479],[101.02,98.66,0.1138,0.1517],[100.73,98.71,0.1142,0.152],[100.55,98.96,0.1144,0.1562],[100.54,99.31,0.1139,0.1663],[100.29,99.48,0.1139,0.1633],[99.77,99.41,0.1146,0.1645],[99.1,98.94,0.1148,0.1641],[98.02,97.76,0.1146,0.1632],[97.77,97.9,0.1144,0.1648],[97.87,98.98,0.1144,0.1648],[98.02,100.28,0.114,0.1615],[98.38,102.18,0.1138,0.1553],[98.74,102.27,0.1133,0.1528],[99.22,102.06,0.1133,0.1569],[99.97,102.0,0.1134,0.1408],[100.45,101.7,0.1135,0.142],[100.67,101.36,0.1124,0.1416],[100.79,101.0,0.1123,0.1437],[100.88,100.52,0.1107,0.1281],[100.69,100.06,0.1087,0.119],[100.67,99.85,0.1074,0.1187],[100.57,99.55,0.1054,0.1142],[99.93,98.78,0.1042,0.1264],[99.32,98.3,0.1043,0.1099],[98.58,97.95,0.1049,0.1103],[97.92,98.04,0.1032,0.1132],[97.75,98.62,0.1024,0.1157],[97.91,99.21,0.102,0.1161]]},{"t":"XLE","name":"Energy","i":6,"pts":[[102.05,100.41,0.1254,0.3196],[101.3,98.73,0.1243,0.315],[100.76,98.02,0.1242,0.3212],[99.78,97.88,0.124,0.3148],[99.18,98.13,0.1245,0.3136],[99.14,98.74,0.1252,0.3005],[98.66,98.94,0.1237,0.3053],[98.38,99.38,0.1225,0.3074],[98.3,99.67,0.1217,0.3067],[98.31,99.73,0.1201,0.2905],[98.66,100.2,0.1209,0.3027],[99.08,100.68,0.1248,0.2958],[99.24,101.01,0.1275,0.3006],[99.37,101.29,0.126,0.3011],[99.31,101.12,0.1252,0.3032],[98.81,100.41,0.126,0.3085],[98.69,100.14,0.1236,0.3026],[98.64,99.89,0.1215,0.301],[98.09,99.28,0.1198,0.2966],[97.99,99.53,0.1183,0.2967],[98.27,99.81,0.1158,0.1782],[98.7,100.32,0.1145,0.1805],[99.0,101.28,0.1124,0.1862],[99.25,101.48,0.1105,0.1866],[99.09,100.81,0.1088,0.1862],[99.18,100.42,0.1093,0.1984],[99.17,100.1,0.1098,0.2013],[98.87,99.48,0.1088,0.2017],[98.47,99.26,0.1073,0.2013],[97.66,98.32,0.107,0.2016],[97.72,98.6,0.1025,0.1821],[98.32,99.63,0.0972,0.1831],[99.41,101.19,0.0934,0.1779],[100.18,102.24,0.0913,0.183],[100.59,101.98,0.0902,0.1801],[100.67,101.33,0.0891,0.1704],[100.28,100.23,0.0891,0.1709],[99.5,99.19,0.0913,0.176],[99.1,98.79,0.0909,0.1756],[99.29,99.0,0.0918,0.1816],[99.66,99.55,0.096,0.1792],[101.15,100.93,0.098,0.1781],[102.44,101.65,0.1009,0.1718],[102.65,101.42,0.1058,0.1782],[102.74,101.1,0.1087,0.1856],[102.62,100.1,0.1088,0.1759],[102.34,99.23,0.1114,0.1612],[102.13,99.12,0.1143,0.1358],[101.95,99.1,0.1246,0.1355],[101.82,99.22,0.1291,0.1349],[101.83,99.45,0.1336,0.1346],[101.94,99.61,0.1388,0.1529],[101.76,99.54,0.1442,0.1879],[101.44,99.35,0.1523,0.1947],[100.93,99.04,0.157,0.2083],[100.24,98.74,0.1599,0.2113],[99.8,98.72,0.1633,0.2112],[99.31,98.66,0.1657,0.2265],[99.27,98.98,0.1658,0.2419],[99.16,99.77,0.1677,0.2412],[98.77,99.93,0.1689,0.2632],[98.94,100.97,0.1692,0.2636],[98.89,100.88,0.1685,0.2619],[98.69,100.69,0.1679,0.2819],[98.86,101.39,0.1693,0.2745],[98.75,100.98,0.1702,0.2735],[98.65,100.93,0.1691,0.2785],[98.99,101.5,0.1707,0.2865],[99.54,101.65,0.1666,0.2903],[100.52,102.21,0.1634,0.2892],[100.82,102.07,0.1616,0.2919],[101.05,101.72,0.1603,0.3009],[101.32,101.3,0.1564,0.2901],[101.46,100.42,0.1533,0.2831],[101.96,100.51,0.15,0.2763],[101.97,100.19,0.1496,0.2736],[101.69,99.49,0.1508,0.2716],[101.35,98.85,0.15,0.262]]},{"t":"XLU","name":"Utilities","i":7,"pts":[[102.44,100.02,0.0705,0.1603],[102.06,98.13,0.0699,0.1586],[102.0,98.39,0.0697,0.1589],[101.7,98.48,0.0697,0.147],[101.21,98.31,0.0694,0.1436],[101.02,98.69,0.0705,0.1406],[100.5,98.59,0.0712,0.1443],[100.29,98.81,0.0717,0.1462],[100.08,99.1,0.071,0.1417],[99.49,98.99,0.0713,0.1279],[99.1,99.2,0.071,0.1275],[98.6,99.09,0.0708,0.1233],[98.16,98.96,0.071,0.1246],[98.16,99.6,0.0718,0.1238],[98.29,100.83,0.0734,0.1224],[98.49,102.14,0.0736,0.1215],[98.7,102.57,0.0752,0.1125],[99.25,102.45,0.0753,0.1109],[99.58,102.04,0.0756,0.1104],[99.67,101.6,0.0754,0.1113],[99.85,101.34,0.0744,0.0757],[99.18,100.23,0.0749,0.0822],[98.48,99.35,0.0739,0.0824],[98.28,99.08,0.0733,0.0884],[97.85,98.64,0.073,0.0865],[98.28,99.49,0.072,0.0952],[99.03,100.64,0.0716,0.0952],[100.25,101.63,0.0711,0.0913],[101.49,102.24,0.0707,0.0921],[101.62,101.67,0.0702,0.0898],[101.18,100.83,0.0695,0.1027],[100.67,99.81,0.0687,0.1003],[100.11,98.89,0.0677,0.1026],[100.03,98.93,0.0657,0.1042],[100.3,99.4,0.0641,0.1108],[99.51,99.31,0.0637,0.1339],[98.87,99.27,0.0633,0.1348],[98.22,98.99,0.0628,0.1331],[97.88,98.71,0.0625,0.134],[98.22,99.32,0.0621,0.1342],[98.34,99.75,0.0619,0.1366],[98.65,100.32,0.0613,0.1358],[98.81,100.83,0.0619,0.1387],[98.88,100.98,0.0619,0.1359],[99.19,101.4,0.061,0.1352],[100.09,101.73,0.0617,0.1708],[101.06,101.91,0.0615,0.1679],[102.03,102.01,0.062,0.1725],[102.44,101.68,0.0616,0.1754],[102.16,100.87,0.0608,0.1753],[101.85,100.06,0.0613,0.1886],[101.7,99.27,0.0613,0.1933],[101.51,98.66,0.0619,0.1935],[101.2,98.58,0.063,0.1934],[100.83,98.6,0.0637,0.1919],[100.19,98.49,0.0643,0.1759],[99.58,98.5,0.0639,0.1742],[98.69,98.45,0.0642,0.1873],[98.14,98.6,0.0648,0.1901],[98.03,99.02,0.065,0.1963],[98.0,99.41,0.0654,0.1977],[98.32,100.2,0.0661,0.1956],[98.62,101.07,0.0656,0.1925],[98.76,101.56,0.0656,0.1913],[99.18,101.86,0.0668,0.1997],[99.39,101.53,0.0666,0.1652],[99.52,101.22,0.0663,0.1656],[99.73,101.11,0.0655,0.1579],[99.82,100.78,0.0664,0.16],[99.71,100.48,0.0671,0.173],[99.09,99.87,0.0678,0.1566],[98.26,98.96,0.0694,0.152],[97.42,98.15,0.0697,0.158],[97.6,98.38,0.0703,0.1556],[98.06,99.21,0.0714,0.1553],[98.24,100.06,0.0709,0.1565],[98.35,100.83,0.0717,0.1606],[98.38,100.69,0.0714,0.1507]]},{"t":"XLRE","name":"Real Estate","i":8,"pts":[[101.94,99.81,0.0207,0.1876],[101.56,98.39,0.0216,0.1812],[101.62,98.21,0.0215,0.1902],[101.31,98.28,0.0217,0.1865],[100.89,98.28,0.0218,0.1925],[100.85,98.76,0.0215,0.1762],[100.08,98.4,0.0212,0.1766],[99.47,98.48,0.0205,0.1847],[98.77,98.56,0.0202,0.1759],[98.11,98.47,0.0199,0.1596],[98.19,99.11,0.0196,0.1588],[98.44,99.75,0.0195,0.1587],[98.31,100.38,0.0199,0.158],[98.35,101.31,0.0199,0.1601],[98.35,101.42,0.0198,0.1603],[98.37,101.1,0.0199,0.1567],[98.6,101.35,0.0198,0.1586],[98.72,101.27,0.02,0.1641],[98.68,101.08,0.0201,0.1641],[98.53,100.84,0.0201,0.164],[98.51,100.51,0.0199,0.1348],[98.57,100.36,0.0191,0.1348],[98.77,100.48,0.0188,0.1225],[98.94,100.85,0.0182,0.1225],[98.67,100.35,0.0179,0.1125],[98.46,99.11,0.0177,0.1123],[98.28,97.57,0.0176,0.1116],[98.18,97.56,0.0178,0.1121],[98.52,99.51,0.0181,0.1165],[98.66,100.56,0.0185,0.1183],[98.34,100.17,0.0195,0.1362],[98.39,100.73,0.0198,0.137],[98.22,99.17,0.0194,0.1369],[98.33,99.2,0.0187,0.1343],[98.72,101.37,0.0187,0.1373],[98.6,100.73,0.0185,0.1395],[98.57,101.06,0.0187,0.1343],[98.2,99.73,0.0188,0.1236],[98.14,98.59,0.019,0.1262],[98.36,99.61,0.0194,0.1263],[98.43,99.84,0.0196,0.1198],[99.05,102.31,0.0202,0.1379],[99.4,102.39,0.0205,0.1428],[99.69,101.99,0.0209,0.1428],[100.52,102.34,0.0206,0.1429],[101.47,102.1,0.0212,0.1527],[102.11,101.91,0.0214,0.1527],[102.35,101.55,0.0216,0.1408],[102.24,100.62,0.0211,0.1379],[101.8,99.35,0.0207,0.1386],[101.43,98.6,0.0201,0.1372],[101.16,98.37,0.0202,0.137],[101.0,98.44,0.0204,0.1503],[100.81,98.72,0.0209,0.1561],[100.76,99.0,0.0207,0.1642],[100.39,99.04,0.0206,0.1636],[99.89,98.97,0.0207,0.163],[99.01,98.74,0.0204,0.1611],[97.85,98.37,0.02,0.168],[97.77,98.72,0.0194,0.1727],[97.74,99.1,0.0191,0.175],[98.24,100.26,0.0185,0.165],[98.86,102.1,0.0182,0.16],[98.85,101.94,0.0182,0.171],[99.63,102.07,0.0184,0.1802],[99.69,101.46,0.0182,0.1744],[99.46,100.78,0.018,0.1748],[100.15,101.09,0.0176,0.1774],[100.37,100.65,0.0177,0.1731],[100.7,100.73,0.0178,0.1745],[100.71,100.77,0.0178,0.1595],[99.77,99.69,0.0177,0.1578],[98.61,98.62,0.0176,0.1487],[98.1,98.02,0.0176,0.1455],[98.03,98.08,0.0181,0.1342],[98.01,98.8,0.0183,0.1334],[97.89,99.55,0.018,0.1358],[97.97,100.0,0.0179,0.1365]]},{"t":"XLB","name":"Materials","i":9,"pts":[[101.68,100.28,0.0469,0.2045],[101.33,98.32,0.047,0.2059],[101.33,97.69,0.0466,0.2052],[100.97,97.77,0.0461,0.2067],[100.48,98.02,0.046,0.2084],[100.27,98.47,0.046,0.1981],[99.4,98.15,0.045,0.2032],[99.02,98.45,0.0439,0.2019],[98.48,98.65,0.0426,0.2021],[98.12,98.75,0.0422,0.18],[98.33,99.55,0.0418,0.1797],[98.32,99.91,0.0413,0.1805],[98.35,100.51,0.0395,0.1838],[98.59,101.35,0.0392,0.1921],[98.82,101.58,0.0396,0.1888],[98.89,101.56,0.0401,0.1904],[99.19,101.59,0.04,0.1924],[98.59,100.68,0.0411,0.2147],[97.96,99.82,0.0412,0.2163],[97.86,99.65,0.0417,0.2175],[98.04,99.45,0.0418,0.1637],[98.62,100.56,0.0411,0.1589],[99.13,101.57,0.0408,0.1597],[99.2,101.63,0.0404,0.1581],[98.62,100.61,0.0403,0.1553],[98.04,99.08,0.0402,0.1583],[97.87,98.46,0.0405,0.153],[97.9,98.65,0.0408,0.1609],[98.06,99.55,0.0406,0.1615],[98.22,100.42,0.0402,0.1606],[98.04,100.48,0.0409,0.1718],[98.13,100.52,0.0423,0.1709],[98.31,100.47,0.0428,0.1681],[98.55,100.46,0.0422,0.1548],[98.98,101.08,0.0418,0.1657],[99.15,101.04,0.0416,0.1656],[99.43,101.18,0.041,0.1657],[99.67,101.22,0.0397,0.132],[100.07,101.1,0.0394,0.1329],[100.98,101.65,0.039,0.1302],[101.84,101.96,0.0393,0.1442],[102.27,101.95,0.0392,0.1444],[102.42,101.47,0.0399,0.1484],[102.2,100.04,0.0408,0.1509],[102.1,98.81,0.042,0.1621],[102.15,98.43,0.043,0.1625],[101.97,98.24,0.0436,0.1645],[101.94,98.59,0.0435,0.1489],[101.6,98.57,0.0436,0.1922],[101.19,98.43,0.0436,0.1945],[100.79,98.53,0.0434,0.1991],[100.64,98.66,0.0424,0.2088],[100.73,99.1,0.0425,0.2119],[100.8,99.56,0.0429,0.2135],[100.79,99.97,0.0434,0.2101],[100.21,99.74,0.0435,0.2073],[99.23,98.48,0.0436,0.2081],[97.98,97.26,0.044,0.2081],[97.59,97.63,0.0439,0.2126],[97.69,98.61,0.0439,0.2127],[97.94,99.93,0.0437,0.2026],[98.22,101.44,0.0444,0.2035],[98.64,101.87,0.0441,0.2048],[98.95,101.69,0.0438,0.2037],[99.33,101.51,0.0427,0.1913],[99.53,101.25,0.0421,0.1833],[99.39,100.78,0.0422,0.1861],[99.4,100.53,0.0422,0.1855],[99.33,100.24,0.0428,0.1532],[99.03,99.92,0.0431,0.154],[99.2,100.07,0.0435,0.1499],[99.14,99.89,0.0445,0.1362],[99.43,99.97,0.0448,0.1314],[100.13,100.91,0.0455,0.1241],[99.95,100.35,0.0461,0.1264],[99.4,99.55,0.0464,0.1345],[97.92,97.65,0.0464,0.1366],[97.6,97.5,0.0465,0.1388]]},{"t":"XLC","name":"Communication Svcs","i":10,"pts":[[100.94,99.17,0.0429,0.1979],[100.77,99.39,0.0436,0.2105],[100.57,99.34,0.0434,0.2088],[100.37,99.27,0.0435,0.2185],[100.15,99.3,0.0429,0.2253],[100.14,99.5,0.0433,0.2204],[99.81,99.44,0.0428,0.2324],[100.26,100.29,0.0424,0.234],[100.25,100.95,0.0425,0.2314],[100.73,102.14,0.0427,0.2325],[101.12,102.68,0.0431,0.2291],[100.78,101.26,0.0425,0.2271],[102.2,102.36,0.0426,0.2397],[101.76,101.14,0.0426,0.237],[100.73,99.52,0.0426,0.2363],[99.1,98.3,0.0425,0.2354],[97.41,97.13,0.0432,0.2337],[97.62,98.06,0.044,0.2258],[97.93,98.91,0.044,0.226],[98.94,100.26,0.0444,0.2277],[99.7,101.32,0.0446,0.163],[100.14,101.25,0.0444,0.154],[101.59,101.5,0.0449,0.1524],[102.02,101.14,0.0459,0.1432],[102.27,100.88,0.0466,0.1394],[102.21,100.64,0.0469,0.1406],[101.6,99.92,0.0472,0.1319],[100.99,99.58,0.0471,0.1406],[100.42,99.31,0.0464,0.1417],[99.73,99.12,0.0464,0.1392],[99.22,99.0,0.0464,0.138],[98.73,98.91,0.0464,0.1456],[98.23,98.9,0.0457,0.1262],[98.35,99.31,0.0447,0.1263],[98.57,99.72,0.0453,0.1292],[98.94,100.19,0.0454,0.1302],[99.37,100.81,0.0457,0.1304],[99.52,101.0,0.0455,0.1271],[99.76,101.19,0.0457,0.1274],[99.93,101.2,0.0457,0.1185],[100.01,100.89,0.0448,0.1186],[99.69,100.5,0.045,0.1258],[99.64,100.22,0.045,0.1196],[100.27,100.44,0.0449,0.1213],[99.87,99.94,0.0448,0.1318],[100.24,100.43,0.0441,0.1322],[100.06,100.13,0.044,0.1339],[99.47,98.12,0.0441,0.1242],[101.65,101.91,0.0447,0.1217],[102.51,102.04,0.0451,0.1286],[102.4,101.78,0.0452,0.1318],[101.42,101.2,0.0454,0.1437],[100.49,98.27,0.0459,0.16],[99.5,97.6,0.0465,0.1628],[98.71,97.85,0.0461,0.1707],[97.93,98.33,0.0456,0.1764],[97.59,98.8,0.0455,0.1769],[97.58,99.35,0.0454,0.1769],[97.63,99.78,0.0451,0.1756],[97.88,100.29,0.0446,0.1752],[97.99,100.51,0.0452,0.1747],[98.15,100.54,0.0451,0.1794],[98.29,100.64,0.0452,0.1773],[98.32,100.64,0.0455,0.1728],[98.38,100.75,0.046,0.1692],[98.48,100.86,0.0472,0.1779],[98.6,100.76,0.0482,0.1777],[98.84,100.76,0.0488,0.1768],[98.9,100.67,0.0496,0.186],[98.93,100.51,0.0498,0.1857],[98.86,100.19,0.0495,0.1891],[98.8,99.28,0.0497,0.1761],[98.97,98.69,0.0495,0.1646],[99.16,99.28,0.0501,0.163],[99.36,100.67,0.0501,0.1451],[99.64,102.09,0.0508,0.1383],[99.73,101.59,0.0505,0.1389],[99.92,101.37,0.0512,0.1467]]}]},"daily":{"label":"Daily","dates":["2026-02-18","2026-02-19","2026-02-20","2026-02-23","2026-02-24","2026-02-25","2026-02-26","2026-02-27","2026-03-02","2026-03-03","2026-03-04","2026-03-05","2026-03-06","2026-03-09","2026-03-10","2026-03-11","2026-03-12","2026-03-13","2026-03-16","2026-03-17","2026-03-18","2026-03-19","2026-03-20","2026-03-23","2026-03-24","2026-03-25","2026-03-26","2026-03-27","2026-03-30","2026-03-31","2026-04-01","2026-04-02","2026-04-06","2026-04-07","2026-04-08","2026-04-09","2026-04-10","2026-04-13","2026-04-14","2026-04-15","2026-04-16","2026-04-17","2026-04-20","2026-04-21","2026-04-22","2026-04-23","2026-04-24","2026-04-27","2026-04-28","2026-04-29","2026-04-30","2026-05-01","2026-05-04","2026-05-05","2026-05-06","2026-05-07","2026-05-08","2026-05-11","2026-05-12","2026-05-13","2026-05-14","2026-05-15","2026-05-18","2026-05-19","2026-05-20","2026-05-21","2026-05-22","2026-05-26","2026-05-27","2026-05-28","2026-05-29","2026-06-01","2026-06-02","2026-06-03","2026-06-04","2026-06-05","2026-06-08","2026-06-09","2026-06-10","2026-06-11","2026-06-12","2026-06-15","2026-06-16","2026-06-17","2026-06-18","2026-06-22","2026-06-23","2026-06-24","2026-06-25","2026-06-26","2026-06-29","2026-06-30","2026-07-01","2026-07-02","2026-07-06","2026-07-07","2026-07-08","2026-07-09","2026-07-10","2026-07-13","2026-07-14","2026-07-15","2026-07-16","2026-07-17","2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-14","2026-09-15","2026-09-16","2026-09-17","2026-09-18","2026-09-21","2026-09-22"],"dlabels":["18 Feb 2026","19 Feb 2026","20 Feb 2026","23 Feb 2026","24 Feb 2026","25 Feb 2026","26 Feb 2026","27 Feb 2026","02 Mar 2026","03 Mar 2026","04 Mar 2026","05 Mar 2026","06 Mar 2026","09 Mar 2026","10 Mar 2026","11 Mar 2026","12 Mar 2026","13 Mar 2026","16 Mar 2026","17 Mar 2026","18 Mar 2026","19 Mar 2026","20 Mar 2026","23 Mar 2026","24 Mar 2026","25 Mar 2026","26 Mar 2026","27 Mar 2026","30 Mar 2026","31 Mar 2026","01 Apr 2026","02 Apr 2026","06 Apr 2026","07 Apr 2026","08 Apr 2026","09 Apr 2026","10 Apr 2026","13 Apr 2026","14 Apr 2026","15 Apr 2026","16 Apr 2026","17 Apr 2026","20 Apr 2026","21 Apr 2026","22 Apr 2026","23 Apr 2026","24 Apr 2026","27 Apr 2026","28 Apr 2026","29 Apr 2026","30 Apr 2026","01 May 2026","04 May 2026","05 May 2026","06 May 2026","07 May 2026","08 May 2026","11 May 2026","12 May 2026","13 May 2026","14 May 2026","15 May 2026","18 May 2026","19 May 2026","20 May 2026","21 May 2026","22 May 2026","26 May 2026","27 May 2026","28 May 2026","29 May 2026","01 Jun 2026","02 Jun 2026","03 Jun 2026","04 Jun 2026","05 Jun 2026","08 Jun 2026","09 Jun 2026","10 Jun 2026","11 Jun 2026","12 Jun 2026","15 Jun 2026","16 Jun 2026","17 Jun 2026","18 Jun 2026","22 Jun 2026","23 Jun 2026","24 Jun 2026","25 Jun 2026","26 Jun 2026","29 Jun 2026","30 Jun 2026","01 Jul 2026","02 Jul 2026","06 Jul 2026","07 Jul 2026","08 Jul 2026","09 Jul 2026","10 Jul 2026","13 Jul 2026","14 Jul 2026","15 Jul 2026","16 Jul 2026","17 Jul 2026","20 Jul 2026","21 Jul 2026","22 Jul 2026","23 Jul 2026","24 Jul 2026","27 Jul 2026","28 Jul 2026","29 Jul 2026","30 Jul 2026","31 Jul 2026","03 Aug 2026","04 Aug 2026","05 Aug 2026","06 Aug 2026","07 Aug 2026","10 Aug 2026","11 Aug 2026","12 Aug 2026","13 Aug 2026","14 Aug 2026","17 Aug 2026","18 Aug 2026","19 Aug 2026","20 Aug 2026","21 Aug 2026","24 Aug 2026","25 Aug 2026","26 Aug 2026","27 Aug 2026","28 Aug 2026","31 Aug 2026","01 Sep 2026","02 Sep 2026","03 Sep 2026","04 Sep 2026","08 Sep 2026","09 Sep 2026","10 Sep 2026","11 Sep 2026","14 Sep 2026","15 Sep 2026","16 Sep 2026","17 Sep 2026","18 Sep 2026","21 Sep 2026","22 Sep 2026"],"series":[{"t":"XLK","name":"Technology","i":0,"pts":[[97.17,98.36,0.1671,0.266],[97.5,99.15,0.1634,0.2614],[97.81,100.04,0.1625,0.2604],[97.88,100.46,0.1623,0.2656],[97.9,100.74,0.1608,0.2691],[98.02,101.26,0.1603,0.2738],[98.05,101.64,0.1587,0.2747],[98.07,101.85,0.1555,0.2748],[98.11,101.78,0.1523,0.2684],[98.13,101.72,0.1513,0.269],[98.18,101.51,0.1488,0.2675],[98.29,101.21,0.1422,0.2485],[98.35,100.9,0.136,0.2511],[98.51,100.97,0.1304,0.2157],[98.63,101.06,0.1279,0.2076],[98.71,101.0,0.1253,0.2079],[98.82,101.09,0.1285,0.2162],[98.98,101.23,0.1265,0.1984],[99.14,101.34,0.1252,0.2051],[99.35,101.51,0.1226,0.206],[99.52,101.59,0.1223,0.2062],[99.68,101.59,0.1225,0.2061],[99.83,101.61,0.1243,0.2187],[99.94,101.5,0.1235,0.2179],[100.02,101.41,0.1243,0.213],[100.04,101.31,0.1239,0.2009],[100.0,101.12,0.1229,0.2214],[99.95,100.88,0.1231,0.2244],[99.76,100.51,0.1252,0.2281],[99.64,100.16,0.1234,0.2759],[99.55,99.89,0.1224,0.2744],[99.47,99.65,0.1228,0.2761],[99.47,99.5,0.1242,0.2678],[99.48,99.41,0.1235,0.2604],[99.55,99.42,0.1215,0.2825],[99.6,99.46,0.121,0.2823],[99.82,99.73,0.1164,0.2735],[100.16,100.11,0.1168,0.2788],[100.68,100.81,0.1153,0.2796],[101.16,101.36,0.1154,0.2829],[101.65,101.83,0.1172,0.2784],[102.06,102.16,0.1167,0.2805],[102.42,102.33,0.1148,0.2616],[102.74,102.42,0.1159,0.2612],[103.01,102.42,0.118,0.2627],[103.14,102.32,0.1188,0.2733],[103.31,102.15,0.1202,0.2454],[103.34,101.84,0.1218,0.2235],[103.25,101.37,0.1219,0.2207],[103.16,100.94,0.1233,0.1886],[103.0,100.49,0.1248,0.1886],[102.89,100.13,0.1259,0.1898],[102.8,99.8,0.1254,0.1915],[102.73,99.53,0.128,0.1964],[102.68,99.28,0.1293,0.1908],[102.66,99.15,0.1311,0.1935],[102.65,98.98,0.1334,0.2113],[102.67,98.91,0.1347,0.2082],[102.67,98.91,0.1387,0.2243],[102.65,98.9,0.1402,0.2227],[102.66,98.97,0.1418,0.2237],[102.61,98.99,0.1471,0.2399],[102.53,99.0,0.1521,0.247],[102.44,98.97,0.1542,0.2502],[102.35,98.96,0.152,0.2506],[102.29,98.94,0.1529,0.2398],[102.19,98.89,0.1539,0.2275],[102.12,98.85,0.1568,0.2375],[102.08,98.86,0.1577,0.2247],[102.05,98.88,0.1601,0.2254],[102.04,98.9,0.1656,0.2295],[102.09,99.0,0.1702,0.2351],[102.16,99.14,0.1712,0.2332],[102.21,99.28,0.1712,0.239],[102.2,99.35,0.1745,0.2436],[102.11,99.35,0.1824,0.351],[102.05,99.39,0.1838,0.3393],[101.94,99.37,0.1918,0.3444],[101.84,99.35,0.1942,0.3501],[101.77,99.33,0.1968,0.3714],[101.67,99.29,0.1971,0.3693],[101.58,99.21,0.1963,0.382],[101.45,99.08,0.1928,0.395],[101.35,98.99,0.1906,0.3942],[101.3,99.0,0.1918,0.3997],[101.34,99.12,0.1928,0.3995],[101.3,99.17,0.193,0.4284],[101.28,99.26,0.1911,0.4193],[101.29,99.36,0.1931,0.4201],[101.24,99.4,0.1941,0.4224],[101.21,99.45,0.1923,0.4234],[101.18,99.5,0.1908,0.4256],[101.15,99.57,0.1891,0.4309],[101.06,99.59,0.189,0.4385],[100.96,99.54,0.186,0.4416],[100.81,99.4,0.1795,0.3839],[100.74,99.38,0.1761,0.3787],[100.69,99.37,0.1668,0.3801],[100.63,99.34,0.1616,0.3695],[100.56,99.34,0.1581,0.3585],[100.49,99.34,0.1535,0.3601],[100.35,99.28,0.1507,0.3342],[100.22,99.22,0.1504,0.3294],[100.13,99.23,0.1498,0.3307],[100.03,99.23,0.1486,0.3088],[100.01,99.35,0.1474,0.328],[99.96,99.35,0.1437,0.2964],[99.87,99.25,0.1405,0.2976],[99.74,99.04,0.1368,0.299],[99.63,98.8,0.1341,0.294],[99.43,98.24,0.1321,0.284],[99.22,97.88,0.1315,0.2698],[99.16,98.09,0.1352,0.3344],[99.07,98.13,0.133,0.3222],[98.98,98.23,0.1333,0.3214],[98.92,98.17,0.1335,0.3554],[98.86,98.23,0.1321,0.3544],[98.79,98.37,0.1315,0.3468],[98.82,98.95,0.1319,0.3502],[98.87,99.51,0.131,0.3402],[99.01,100.73,0.1323,0.3378],[99.26,102.21,0.1325,0.3381],[99.38,102.65,0.1311,0.3269],[99.53,103.12,0.1284,0.3238],[99.71,103.48,0.1274,0.3237],[99.69,103.21,0.1276,0.3253],[99.63,102.92,0.127,0.3278],[99.6,102.76,0.1265,0.3256],[99.52,102.37,0.1252,0.3205],[99.43,101.99,0.1248,0.3258],[99.36,101.51,0.124,0.3181],[99.27,100.86,0.1211,0.2993],[99.28,100.64,0.1183,0.2579],[99.24,100.29,0.1181,0.2657],[99.21,99.92,0.1162,0.262],[99.23,99.99,0.1127,0.2043],[99.27,100.21,0.1115,0.2037],[99.31,100.33,0.1107,0.2086],[99.41,100.65,0.1093,0.204],[99.61,101.19,0.1097,0.2017],[99.82,101.64,0.1088,0.2016],[99.96,101.95,0.1072,0.2006],[100.0,101.91,0.108,0.2031],[100.04,101.94,0.1093,0.2116],[100.05,101.91,0.1083,0.2113],[100.14,101.93,0.1061,0.194],[100.32,102.02,0.1076,0.2054],[100.54,102.16,0.1084,0.2061],[100.78,102.24,0.1111,0.2263],[101.04,102.17,0.1112,0.2133]]},{"t":"XLF","name":"Financials","i":1,"pts":[[98.72,99.95,0.1356,0.1629],[98.56,99.81,0.1364,0.1638],[98.41,99.67,0.1358,0.1638],[98.16,99.39,0.1393,0.1943],[97.98,99.25,0.1411,0.1936],[97.9,99.13,0.1416,0.204],[97.99,99.22,0.1424,0.209],[98.02,99.34,0.1463,0.2159],[98.04,99.46,0.146,0.2159],[98.06,99.54,0.145,0.2107],[98.06,99.6,0.1453,0.211],[98.09,99.76,0.1464,0.2082],[98.12,99.91,0.1483,0.2085],[98.19,100.17,0.1497,0.1944],[98.26,100.35,0.1513,0.1943],[98.26,100.42,0.1509,0.1946],[98.19,100.3,0.1503,0.1955],[98.22,100.31,0.1483,0.187],[98.25,100.33,0.1491,0.1909],[98.27,100.35,0.1503,0.1872],[98.29,100.39,0.1505,0.1861],[98.32,100.42,0.1499,0.1857],[98.4,100.5,0.1506,0.1834],[98.51,100.57,0.148,0.1512],[98.63,100.69,0.1451,0.1497],[98.75,100.87,0.1436,0.1336],[98.91,101.16,0.1421,0.1234],[99.02,101.3,0.1399,0.1328],[99.19,101.49,0.1415,0.1424],[99.32,101.62,0.1438,0.1641],[99.42,101.7,0.1432,0.1624],[99.51,101.75,0.1441,0.1623],[99.56,101.69,0.1436,0.1592],[99.61,101.59,0.1426,0.1584],[99.66,101.47,0.1422,0.1817],[99.71,101.36,0.1408,0.1782],[99.66,101.11,0.1415,0.172],[99.69,101.0,0.1426,0.1799],[99.59,100.72,0.1425,0.1788],[99.52,100.51,0.1414,0.1794],[99.45,100.32,0.1403,0.1725],[99.35,100.11,0.1413,0.1728],[99.26,99.94,0.1398,0.1726],[99.17,99.77,0.1382,0.1749],[99.0,99.5,0.1395,0.1754],[98.83,99.2,0.1416,0.1793],[98.64,98.97,0.1416,0.1803],[98.44,98.64,0.1398,0.1499],[98.35,98.58,0.1383,0.1478],[98.28,98.5,0.1341,0.1337],[98.21,98.45,0.1338,0.1337],[98.13,98.45,0.1355,0.1357],[98.01,98.41,0.1371,0.138],[97.84,98.34,0.1373,0.1379],[97.71,98.44,0.1368,0.1055],[97.6,98.57,0.1372,0.1074],[97.51,98.74,0.1357,0.1023],[97.39,98.88,0.135,0.0813],[97.32,98.93,0.1355,0.0857],[97.19,98.89,0.1362,0.0893],[97.11,98.91,0.139,0.0923],[97.13,99.06,0.1372,0.0875],[97.23,99.34,0.1355,0.0984],[97.33,99.66,0.1349,0.1047],[97.46,99.96,0.1347,0.1127],[97.59,100.23,0.1331,0.1096],[97.74,100.52,0.1327,0.1071],[97.86,100.79,0.132,0.1042],[97.91,100.91,0.1342,0.1081],[97.98,101.13,0.1369,0.1082],[98.07,101.28,0.1376,0.1095],[98.1,101.25,0.1339,0.1091],[98.09,101.09,0.1312,0.1069],[98.09,100.95,0.1326,0.1139],[98.15,100.85,0.1369,0.1457],[98.28,100.85,0.1358,0.1442],[98.38,100.77,0.1367,0.1443],[98.53,100.79,0.1355,0.1472],[98.71,100.93,0.133,0.1464],[98.88,101.02,0.1326,0.1412],[99.06,101.1,0.1339,0.1467],[99.21,101.2,0.1352,0.1453],[99.41,101.39,0.1374,0.1475],[99.64,101.59,0.1388,0.1405],[99.75,101.6,0.1389,0.1428],[99.82,101.49,0.1383,0.1435],[99.96,101.49,0.1386,0.1434],[100.07,101.42,0.1387,0.1439],[100.12,101.27,0.1376,0.1414],[100.23,101.2,0.1353,0.1401],[100.28,101.07,0.1355,0.1395],[100.35,100.98,0.1375,0.1392],[100.42,100.86,0.1402,0.1544],[100.53,100.75,0.1404,0.1498],[100.71,100.81,0.1364,0.1298],[100.87,100.9,0.136,0.1311],[100.92,100.8,0.1365,0.1498],[100.99,100.76,0.1376,0.1504],[101.07,100.78,0.1395,0.1479],[101.17,100.75,0.1411,0.1476],[101.31,100.81,0.1412,0.1428],[101.48,100.9,0.1445,0.1434],[101.6,100.91,0.1436,0.1369],[101.65,100.82,0.1442,0.1395],[101.68,100.65,0.1471,0.1355],[101.66,100.45,0.149,0.135],[101.69,100.41,0.1507,0.1354],[101.74,100.36,0.1503,0.1359],[101.8,100.32,0.1516,0.1352],[101.84,100.23,0.154,0.1377],[101.91,100.12,0.1551,0.1416],[101.95,99.94,0.1579,0.156],[101.92,99.73,0.1556,0.1404],[101.86,99.55,0.1546,0.1321],[101.79,99.37,0.1547,0.1309],[101.72,99.24,0.1547,0.1331],[101.66,99.05,0.1541,0.1091],[101.58,98.8,0.1549,0.1073],[101.46,98.45,0.1545,0.1089],[101.33,98.11,0.1538,0.1078],[101.18,97.71,0.1504,0.108],[101.05,97.4,0.1461,0.1063],[100.94,97.32,0.1465,0.1072],[100.87,97.39,0.1471,0.1017],[100.79,97.5,0.149,0.1078],[100.78,97.7,0.1481,0.1084],[100.73,97.83,0.1482,0.1114],[100.68,97.98,0.1511,0.1159],[100.68,98.22,0.1501,0.1165],[100.71,98.49,0.1517,0.1196],[100.73,98.74,0.1521,0.1121],[100.74,98.97,0.1498,0.0947],[100.73,99.11,0.1511,0.0972],[100.73,99.23,0.1516,0.0975],[100.74,99.36,0.1523,0.0978],[100.71,99.35,0.1551,0.0976],[100.72,99.44,0.155,0.1017],[100.76,99.56,0.1561,0.1148],[100.77,99.59,0.1575,0.1177],[100.67,99.45,0.1587,0.1269],[100.57,99.33,0.1592,0.1275],[100.48,99.22,0.159,0.1275],[100.44,99.23,0.1611,0.128],[100.37,99.16,0.1596,0.1284],[100.33,99.12,0.1542,0.1245],[100.22,99.05,0.1583,0.134],[100.0,98.78,0.1583,0.133],[99.72,98.39,0.158,0.1299],[99.36,97.98,0.1579,0.126],[98.89,97.63,0.1636,0.1305]]},{"t":"XLV","name":"Healthcare","i":2,"pts":[[100.61,100.91,0.1067,0.1475],[100.71,101.25,0.1056,0.1331],[100.64,101.39,0.1056,0.1333],[100.85,101.87,0.1067,0.1378],[101.1,102.49,0.1074,0.138],[101.32,102.81,0.1065,0.1239],[101.51,102.82,0.1072,0.121],[101.82,102.71,0.1086,0.1328],[101.86,102.27,0.1087,0.1387],[101.88,101.88,0.1079,0.144],[101.86,101.49,0.1069,0.1387],[101.62,101.1,0.107,0.1498],[101.55,101.08,0.1065,0.15],[101.22,100.51,0.1075,0.1389],[100.98,99.96,0.1075,0.1379],[100.86,99.56,0.1081,0.1366],[100.66,99.08,0.1086,0.146],[100.17,98.18,0.1096,0.146],[99.8,97.77,0.1091,0.1434],[99.27,97.31,0.1095,0.1454],[98.78,97.05,0.1106,0.1525],[98.5,97.24,0.1112,0.1524],[98.27,97.3,0.1102,0.1535],[97.93,97.48,0.1107,0.1448],[97.77,97.7,0.1137,0.1456],[97.71,97.88,0.1154,0.1531],[97.88,98.24,0.1149,0.1531],[97.99,98.72,0.1142,0.1387],[98.19,99.16,0.1151,0.141],[98.4,99.7,0.1164,0.1612],[98.62,100.22,0.1163,0.1646],[98.76,100.52,0.1154,0.1529],[98.74,100.66,0.1156,0.1516],[98.85,100.97,0.1162,0.1459],[98.87,101.08,0.1144,0.1656],[98.76,101.01,0.1134,0.1656],[98.37,100.61,0.1134,0.161],[97.97,100.26,0.1117,0.1618],[97.53,99.81,0.111,0.1604],[97.15,99.42,0.1091,0.1593],[96.82,99.06,0.1079,0.1505],[96.69,98.9,0.1061,0.1583],[96.64,98.92,0.1067,0.1587],[96.61,98.86,0.1048,0.1633],[96.61,98.88,0.0994,0.1636],[96.69,99.03,0.0952,0.16],[96.75,99.35,0.0943,0.167],[96.81,99.65,0.0941,0.1569],[96.92,100.02,0.0936,0.1566],[97.04,100.34,0.0952,0.1414],[97.2,100.65,0.0963,0.1603],[97.31,100.79,0.0959,0.1601],[97.43,100.88,0.0965,0.16],[97.53,100.93,0.0952,0.1605],[97.6,100.95,0.0974,0.1402],[97.66,100.91,0.0973,0.1406],[97.73,100.89,0.0992,0.1363],[97.79,100.86,0.1008,0.1347],[97.87,100.83,0.1023,0.1518],[97.95,100.79,0.1083,0.1518],[97.99,100.71,0.1079,0.1494],[98.04,100.68,0.1094,0.1432],[98.1,100.64,0.1079,0.1412],[98.19,100.64,0.1094,0.142],[98.27,100.66,0.109,0.1418],[98.35,100.7,0.1093,0.1435],[98.47,100.76,0.1091,0.1377],[98.56,100.81,0.1089,0.1411],[98.61,100.82,0.1084,0.1411],[98.68,100.82,0.1072,0.1435],[98.73,100.84,0.1078,0.1309],[98.76,100.83,0.1079,0.1356],[98.76,100.8,0.1086,0.14],[98.76,100.73,0.1086,0.1418],[98.82,100.71,0.1114,0.1755],[98.92,100.71,0.117,0.1741],[99.0,100.66,0.1168,0.1703],[99.13,100.67,0.1164,0.1716],[99.27,100.7,0.1165,0.1692],[99.38,100.7,0.1123,0.1699],[99.49,100.71,0.1119,0.1702],[99.58,100.74,0.1121,0.1667],[99.71,100.81,0.1135,0.1667],[99.81,100.88,0.1117,0.1736],[99.82,100.82,0.1125,0.1768],[99.79,100.7,0.1151,0.1778],[99.83,100.64,0.115,0.1798],[99.86,100.51,0.1159,0.1771],[99.91,100.4,0.1167,0.1827],[100.06,100.43,0.1203,0.2031],[100.21,100.45,0.121,0.1978],[100.37,100.51,0.1236,0.1999],[100.55,100.55,0.1224,0.1937],[100.82,100.73,0.125,0.2076],[101.11,101.01,0.1267,0.1935],[101.44,101.35,0.1245,0.1976],[101.66,101.48,0.1237,0.2052],[101.82,101.56,0.1253,0.2028],[101.89,101.52,0.1271,0.2005],[101.85,101.29,0.1276,0.1997],[101.77,101.05,0.1303,0.2133],[101.74,100.83,0.1316,0.2116],[101.75,100.65,0.1346,0.2225],[101.68,100.22,0.1354,0.215],[101.64,99.7,0.1356,0.2171],[101.52,98.82,0.1347,0.2165],[101.41,98.0,0.1353,0.2147],[101.42,97.47,0.134,0.2169],[101.47,97.39,0.1338,0.213],[101.5,97.58,0.1295,0.1876],[101.65,98.12,0.1298,0.2033],[101.81,98.58,0.1282,0.1983],[101.8,98.56,0.1304,0.2081],[101.73,98.61,0.1285,0.1883],[101.65,98.6,0.1253,0.1845],[101.53,98.67,0.1261,0.176],[101.47,98.79,0.1307,0.1757],[101.37,98.63,0.1309,0.1757],[101.25,98.39,0.1303,0.174],[101.17,98.28,0.1312,0.1816],[101.04,97.91,0.1299,0.1651],[100.89,97.56,0.1303,0.1648],[100.82,97.63,0.1282,0.1498],[100.76,97.79,0.1289,0.1507],[100.76,98.01,0.1294,0.1435],[100.88,98.4,0.1296,0.1506],[101.05,98.76,0.136,0.184],[101.17,99.11,0.1397,0.1989],[101.32,99.48,0.1421,0.2013],[101.43,99.74,0.1418,0.2015],[101.53,100.06,0.1394,0.1876],[101.61,100.37,0.1396,0.1903],[101.65,100.52,0.1386,0.1848],[101.71,100.66,0.1374,0.1832],[101.76,100.72,0.1369,0.1838],[101.78,100.59,0.1338,0.1839],[101.71,100.26,0.1288,0.1813],[101.65,100.01,0.126,0.1813],[101.53,99.67,0.1244,0.1858],[101.34,99.28,0.126,0.1995],[101.14,98.92,0.1258,0.1997],[100.99,98.67,0.1248,0.2001],[100.86,98.51,0.1238,0.2002],[100.8,98.42,0.1241,0.2059],[100.76,98.37,0.1233,0.2058],[100.68,98.32,0.1209,0.1977],[100.57,98.35,0.1136,0.1522],[100.48,98.38,0.1137,0.1395],[100.37,98.45,0.111,0.1338],[100.38,98.74,0.1097,0.1356]]},{"t":"XLY","name":"Cons. Discretionary","i":3,"pts":[[98.17,98.05,0.0623,0.1416],[98.01,98.08,0.0623,0.1226],[97.94,98.26,0.0645,0.123],[97.9,98.57,0.0657,0.1368],[97.96,98.9,0.0665,0.1504],[97.93,99.08,0.0675,0.1504],[97.96,99.27,0.0671,0.1493],[98.01,99.44,0.0665,0.149],[97.98,99.56,0.0665,0.1532],[97.99,99.73,0.0668,0.1513],[98.04,99.91,0.0675,0.1664],[98.16,100.14,0.0684,0.1655],[98.22,100.26,0.0696,0.1606],[98.3,100.37,0.0677,0.1597],[98.34,100.36,0.0667,0.1594],[98.39,100.45,0.067,0.1568],[98.38,100.43,0.0669,0.173],[98.36,100.39,0.0673,0.1687],[98.41,100.47,0.0678,0.1757],[98.49,100.56,0.068,0.1794],[98.48,100.52,0.0683,0.1908],[98.4,100.38,0.0683,0.1912],[98.35,100.31,0.0658,0.1916],[98.38,100.3,0.0653,0.205],[98.41,100.34,0.0644,0.1953],[98.45,100.38,0.0643,0.1991],[98.54,100.52,0.064,0.2051],[98.56,100.62,0.0641,0.223],[98.59,100.63,0.0633,0.2218],[98.61,100.57,0.0643,0.2527],[98.66,100.65,0.0642,0.2449],[98.67,100.73,0.0641,0.248],[98.71,100.82,0.0638,0.2452],[98.64,100.68,0.0637,0.247],[98.59,100.57,0.0655,0.2695],[98.57,100.48,0.065,0.277],[98.55,100.36,0.0653,0.2646],[98.58,100.36,0.0648,0.2648],[98.64,100.39,0.0649,0.272],[98.71,100.45,0.0657,0.2747],[98.75,100.44,0.065,0.2602],[98.9,100.62,0.0656,0.2659],[99.02,100.74,0.0667,0.2553],[99.2,101.04,0.0668,0.2497],[99.32,101.24,0.067,0.2486],[99.35,101.29,0.067,0.2524],[99.38,101.31,0.0676,0.2416],[99.36,101.22,0.0687,0.2138],[99.26,101.02,0.0696,0.2174],[99.11,100.75,0.069,0.1962],[99.01,100.58,0.0702,0.1985],[98.8,100.18,0.0729,0.1864],[98.57,99.77,0.0738,0.1907],[98.3,99.25,0.0733,0.1822],[98.13,98.9,0.0726,0.1656],[98.04,98.73,0.0729,0.1587],[97.91,98.53,0.0731,0.1586],[97.8,98.39,0.0731,0.1608],[97.67,98.32,0.0719,0.1482],[97.56,98.33,0.0708,0.1396],[97.41,98.22,0.0712,0.1385],[97.27,98.21,0.0721,0.1251],[97.19,98.34,0.0725,0.1246],[97.15,98.6,0.0726,0.1274],[97.2,98.89,0.0746,0.1579],[97.26,99.08,0.0748,0.1555],[97.35,99.37,0.0748,0.1537],[97.45,99.66,0.0737,0.1514],[97.65,100.14,0.0758,0.1592],[97.84,100.54,0.0752,0.1589],[97.98,100.94,0.074,0.159],[98.02,101.18,0.0717,0.1781],[98.03,101.28,0.0706,0.1769],[98.06,101.35,0.0695,0.1783],[98.03,101.21,0.0674,0.1701],[98.01,101.09,0.0661,0.1828],[98.0,100.95,0.0656,0.1835],[98.04,100.86,0.0649,0.1838],[97.99,100.52,0.0651,0.1938],[97.98,100.26,0.0657,0.2142],[98.01,100.12,0.0656,0.2146],[98.13,100.23,0.0639,0.2132],[98.29,100.42,0.0629,0.2131],[98.38,100.5,0.0624,0.2281],[98.48,100.67,0.0613,0.2159],[98.5,100.72,0.0615,0.2219],[98.53,100.75,0.0621,0.223],[98.57,100.75,0.0628,0.2275],[98.58,100.8,0.0606,0.2206],[98.61,100.84,0.0609,0.2232],[98.67,100.87,0.0623,0.2404],[98.71,100.76,0.0612,0.2282],[98.76,100.62,0.0616,0.2287],[98.83,100.58,0.0632,0.2291],[98.88,100.51,0.0648,0.2301],[98.98,100.59,0.0665,0.2183],[99.0,100.58,0.0697,0.2276],[99.0,100.51,0.0718,0.2319],[99.05,100.57,0.0727,0.2188],[99.04,100.5,0.0729,0.2056],[98.98,100.33,0.0731,0.2055],[98.96,100.26,0.0744,0.1992],[98.94,100.17,0.0748,0.1996],[98.92,100.07,0.0761,0.1877],[98.88,99.97,0.0769,0.1818],[98.81,99.77,0.0775,0.1723],[98.78,99.71,0.0782,0.1704],[98.57,99.47,0.0804,0.2288],[98.39,99.18,0.0811,0.2261],[98.27,99.07,0.0808,0.2289],[98.23,99.12,0.0785,0.2179],[98.19,99.12,0.0782,0.2185],[98.08,99.01,0.0775,0.2185],[98.12,99.09,0.0795,0.2489],[98.21,99.23,0.0801,0.2558],[98.23,99.32,0.0801,0.255],[98.31,99.44,0.0763,0.2462],[98.55,100.02,0.0747,0.2431],[98.81,100.65,0.0744,0.248],[99.01,101.1,0.0741,0.2447],[99.14,101.37,0.0738,0.2452],[99.15,101.42,0.073,0.2473],[99.2,101.69,0.0729,0.2476],[99.09,101.41,0.0716,0.2402],[98.9,100.89,0.0711,0.2431],[98.86,100.73,0.0701,0.2435],[98.89,100.62,0.0693,0.2496],[98.89,100.14,0.0665,0.1913],[98.89,99.6,0.066,0.1931],[98.92,99.3,0.0654,0.1902],[98.91,99.05,0.0659,0.1866],[98.95,99.14,0.066,0.1859],[98.87,98.93,0.0659,0.1907],[98.9,99.23,0.0622,0.158],[98.98,99.78,0.0602,0.1452],[98.94,99.82,0.0585,0.1558],[98.76,99.38,0.0576,0.1556],[98.66,99.22,0.0579,0.1641],[98.45,98.83,0.0577,0.1594],[98.19,98.31,0.0586,0.1607],[97.94,97.96,0.06,0.1651],[97.8,97.75,0.0599,0.1624],[97.8,98.0,0.0595,0.1654],[97.73,97.94,0.0586,0.1654],[97.6,97.75,0.0609,0.1703],[97.56,97.86,0.0615,0.1708],[97.54,98.21,0.0605,0.1596],[97.49,98.34,0.0599,0.1524],[97.49,98.72,0.0587,0.1543],[97.52,99.18,0.0588,0.1538]]},{"t":"XLP","name":"Cons. Staples","i":4,"pts":[[102.83,99.7,0.1001,0.1386],[102.64,99.47,0.1003,0.1409],[102.44,99.19,0.1001,0.1396],[102.35,99.09,0.0993,0.1423],[102.3,99.05,0.0996,0.142],[102.21,99.01,0.0998,0.1482],[102.11,98.91,0.0992,0.1412],[102.0,98.77,0.0996,0.1426],[101.87,98.7,0.0995,0.1498],[101.78,98.74,0.0977,0.1537],[101.68,98.82,0.0974,0.1471],[101.57,98.9,0.0983,0.1566],[101.51,99.03,0.0964,0.1577],[101.4,99.03,0.0939,0.1516],[101.28,99.01,0.0917,0.1508],[101.19,99.02,0.0913,0.1565],[101.11,99.05,0.0891,0.1457],[101.02,99.08,0.0868,0.1428],[100.95,99.13,0.0853,0.1425],[100.88,99.16,0.083,0.1357],[100.81,99.2,0.0826,0.1561],[100.77,99.26,0.0816,0.157],[100.7,99.27,0.0806,0.1564],[100.63,99.32,0.0796,0.1483],[100.57,99.37,0.078,0.1413],[100.54,99.43,0.078,0.1445],[100.51,99.48,0.0778,0.1443],[100.51,99.55,0.0793,0.1376],[100.53,99.62,0.0786,0.1339],[100.51,99.65,0.0768,0.1322],[100.48,99.67,0.077,0.1321],[100.47,99.69,0.076,0.1195],[100.46,99.72,0.0754,0.124],[100.42,99.73,0.0764,0.134],[100.36,99.72,0.0762,0.1527],[100.3,99.69,0.0757,0.1498],[100.16,99.62,0.0769,0.1556],[99.87,99.43,0.0776,0.1567],[99.5,99.17,0.0777,0.1559],[99.15,98.98,0.0775,0.1562],[98.84,98.83,0.0771,0.1344],[98.52,98.65,0.0769,0.1385],[98.21,98.45,0.0779,0.1348],[97.99,98.31,0.0778,0.1368],[97.8,98.18,0.0779,0.137],[97.71,98.1,0.0771,0.1473],[97.64,98.1,0.0778,0.1466],[97.61,98.31,0.076,0.1502],[97.68,98.74,0.0766,0.1531],[97.77,99.24,0.0785,0.1534],[97.88,99.78,0.0772,0.1608],[97.97,100.34,0.0756,0.1607],[98.05,100.89,0.0754,0.1608],[98.12,101.28,0.0752,0.1485],[98.19,101.57,0.0756,0.1351],[98.19,101.66,0.0746,0.1331],[98.22,101.74,0.0739,0.1241],[98.25,101.79,0.0743,0.1237],[98.28,101.74,0.0753,0.1298],[98.3,101.65,0.0758,0.1275],[98.3,101.51,0.0741,0.1272],[98.33,101.41,0.075,0.1229],[98.39,101.36,0.0742,0.1312],[98.48,101.34,0.0751,0.1272],[98.54,101.31,0.0757,0.131],[98.58,101.3,0.0763,0.126],[98.62,101.27,0.0756,0.1253],[98.64,101.22,0.0749,0.1294],[98.65,101.16,0.0746,0.1315],[98.65,101.09,0.0724,0.1314],[98.61,101.03,0.0717,0.1337],[98.54,100.88,0.0723,0.138],[98.43,100.66,0.0731,0.1362],[98.32,100.44,0.0732,0.1349],[98.25,100.28,0.0737,0.1344],[98.3,100.28,0.0746,0.1484],[98.34,100.26,0.0738,0.1487],[98.44,100.34,0.0724,0.1514],[98.59,100.48,0.0715,0.1557],[98.7,100.59,0.0726,0.1557],[98.85,100.77,0.0726,0.1569],[98.98,100.97,0.0721,0.1569],[99.14,101.23,0.072,0.148],[99.24,101.4,0.0727,0.1663],[99.33,101.51,0.072,0.1656],[99.31,101.39,0.0714,0.1638],[99.38,101.37,0.0725,0.1775],[99.44,101.28,0.0725,0.1727],[99.4,101.06,0.0729,0.1699],[99.45,100.97,0.0743,0.1726],[99.44,100.79,0.0738,0.16],[99.43,100.64,0.0734,0.1652],[99.4,100.45,0.072,0.1648],[99.47,100.4,0.0724,0.1774],[99.53,100.37,0.0728,0.1823],[99.65,100.5,0.0728,0.1758],[99.65,100.41,0.0731,0.1762],[99.5,100.2,0.0747,0.1788],[99.4,100.13,0.0748,0.1733],[99.27,99.93,0.0731,0.1744],[99.14,99.77,0.0732,0.179],[99.11,99.73,0.0722,0.1787],[99.27,99.87,0.0735,0.2047],[99.32,99.8,0.0737,0.1895],[99.48,99.87,0.0744,0.1893],[99.44,99.56,0.0743,0.191],[99.44,99.45,0.0731,0.1804],[99.6,99.85,0.0731,0.1844],[99.78,100.37,0.0726,0.1876],[99.98,101.13,0.0736,0.1918],[100.46,102.56,0.078,0.2023],[101.13,103.78,0.0777,0.1926],[101.23,103.28,0.0797,0.21],[101.22,102.87,0.0788,0.1993],[101.09,102.18,0.0788,0.1958],[101.01,102.0,0.0781,0.1944],[100.88,101.7,0.0774,0.1932],[100.75,101.18,0.0766,0.1861],[100.47,100.4,0.0758,0.1826],[100.03,99.34,0.0757,0.182],[99.42,97.66,0.0766,0.1751],[98.66,96.07,0.0778,0.1756],[98.34,96.16,0.0779,0.1505],[98.19,96.49,0.0768,0.1481],[98.09,96.87,0.0774,0.1588],[98.23,97.33,0.0782,0.159],[98.42,97.76,0.0786,0.1627],[98.57,98.1,0.0798,0.163],[98.78,98.57,0.0805,0.161],[99.16,99.27,0.0799,0.1636],[99.41,99.98,0.0756,0.1536],[99.6,100.76,0.0751,0.1532],[99.58,100.98,0.0734,0.1416],[99.58,101.07,0.0727,0.1413],[99.63,101.16,0.0716,0.1425],[99.63,101.01,0.0712,0.1414],[99.52,100.75,0.0718,0.1418],[99.35,100.49,0.0725,0.142],[99.1,100.13,0.0741,0.1447],[98.68,99.5,0.0758,0.1463],[98.37,99.08,0.0769,0.151],[98.19,98.82,0.0774,0.1498],[98.17,98.86,0.0771,0.1445],[98.25,98.96,0.0765,0.1522],[98.3,98.99,0.0773,0.1442],[98.27,99.01,0.0755,0.1389],[98.19,99.05,0.0749,0.1319],[98.14,99.18,0.0737,0.1264],[97.99,99.28,0.0722,0.122],[97.95,99.58,0.071,0.11]]},{"t":"XLI","name":"Industrials","i":5,"pts":[[102.54,99.83,0.1074,0.1455],[102.5,99.82,0.1084,0.1374],[102.43,99.72,0.1091,0.1343],[102.34,99.55,0.1073,0.1417],[102.28,99.41,0.1067,0.1449],[102.17,99.24,0.1074,0.1503],[102.09,99.09,0.1085,0.1472],[102.03,99.01,0.1066,0.1451],[101.99,98.93,0.1087,0.1452],[101.91,98.85,0.108,0.1623],[101.84,98.85,0.1089,0.1608],[101.72,98.8,0.1102,0.1814],[101.62,98.78,0.1126,0.1857],[101.52,98.79,0.1147,0.1569],[101.41,98.77,0.1155,0.1571],[101.34,98.83,0.1177,0.1571],[101.23,98.83,0.118,0.1752],[101.1,98.81,0.1198,0.172],[100.95,98.78,0.1204,0.1723],[100.83,98.79,0.1216,0.1711],[100.74,98.81,0.122,0.1719],[100.68,98.89,0.1222,0.1682],[100.61,98.95,0.1221,0.1693],[100.55,99.01,0.1242,0.1744],[100.53,99.11,0.1252,0.1685],[100.51,99.18,0.1248,0.1714],[100.5,99.3,0.1255,0.1816],[100.51,99.44,0.1269,0.1821],[100.47,99.55,0.1273,0.1773],[100.45,99.65,0.1282,0.2166],[100.44,99.74,0.1278,0.2269],[100.43,99.8,0.1263,0.2161],[100.42,99.87,0.1245,0.2143],[100.39,99.91,0.1246,0.2127],[100.38,99.94,0.1249,0.2516],[100.38,99.98,0.1239,0.2535],[100.38,100.02,0.1233,0.236],[100.36,100.05,0.1216,0.2357],[100.36,100.15,0.1198,0.2347],[100.27,100.13,0.1208,0.2403],[100.1,100.0,0.1211,0.239],[99.97,99.89,0.1193,0.2437],[99.86,99.77,0.1186,0.2352],[99.72,99.58,0.1184,0.2414],[99.45,99.1,0.1191,0.2417],[99.26,98.73,0.1217,0.2472],[98.99,98.22,0.1201,0.2331],[98.72,97.82,0.1201,0.2258],[98.47,97.47,0.1193,0.2187],[98.29,97.45,0.1219,0.1957],[98.24,97.76,0.1238,0.2085],[98.1,97.82,0.1225,0.2115],[97.92,97.81,0.1212,0.2169],[97.83,97.98,0.1196,0.2175],[97.89,98.55,0.1193,0.1966],[97.8,98.75,0.1202,0.2037],[97.76,99.15,0.1204,0.2039],[97.79,99.65,0.1201,0.2057],[97.84,100.15,0.1205,0.2061],[97.87,100.53,0.1163,0.2015],[97.82,100.57,0.116,0.2009],[97.81,100.84,0.1161,0.2008],[97.82,101.22,0.1155,0.2008],[97.81,101.39,0.1139,0.199],[97.77,101.21,0.112,0.2035],[97.77,101.37,0.1084,0.193],[97.82,101.49,0.1082,0.1925],[97.86,101.47,0.1079,0.1993],[97.91,101.43,0.1055,0.1963],[97.95,101.4,0.1047,0.1951],[97.98,101.48,0.1015,0.1708],[98.01,101.48,0.1005,0.1683],[98.06,101.5,0.1012,0.1667],[98.15,101.59,0.1003,0.1646],[98.25,101.74,0.0984,0.1435],[98.39,101.87,0.0957,0.1373],[98.5,101.86,0.0948,0.1368],[98.63,101.88,0.0944,0.1375],[98.7,101.83,0.098,0.1809],[98.83,101.86,0.0995,0.2146],[98.98,101.92,0.0982,0.2148],[99.13,101.98,0.0979,0.2087],[99.3,102.01,0.0991,0.2081],[99.48,102.01,0.1005,0.202],[99.62,101.96,0.0998,0.2002],[99.75,101.85,0.0991,0.2001],[99.88,101.78,0.0993,0.2153],[100.0,101.71,0.0987,0.2132],[100.26,101.82,0.1,0.2237],[100.44,101.79,0.1002,0.2324],[100.6,101.72,0.1013,0.2322],[100.79,101.68,0.1028,0.2334],[100.9,101.57,0.1021,0.2369],[100.99,101.43,0.1015,0.2365],[101.09,101.35,0.1018,0.2352],[101.11,101.21,0.1028,0.2405],[101.13,101.07,0.1038,0.2442],[101.08,100.9,0.1042,0.242],[100.96,100.54,0.1014,0.2043],[100.87,100.29,0.0997,0.1795],[100.79,100.08,0.1005,0.1789],[100.66,99.79,0.1008,0.173],[100.58,99.62,0.0995,0.1716],[100.51,99.47,0.0985,0.1722],[100.41,99.28,0.0987,0.1719],[100.34,99.19,0.0987,0.17],[100.3,99.13,0.0975,0.1549],[100.42,99.25,0.0992,0.1613],[100.55,99.44,0.0979,0.1425],[100.69,99.63,0.0968,0.1311],[100.82,99.79,0.0952,0.1286],[100.88,99.95,0.0956,0.1605],[100.88,99.99,0.0953,0.163],[100.86,100.0,0.0969,0.1657],[100.88,100.11,0.0985,0.1759],[100.92,100.22,0.0999,0.1759],[100.95,100.28,0.0993,0.1706],[100.82,99.9,0.0996,0.1739],[100.66,99.47,0.1005,0.1736],[100.48,99.0,0.0996,0.1708],[100.37,98.67,0.0996,0.1716],[100.32,98.53,0.0991,0.1711],[100.28,98.49,0.0992,0.1712],[100.25,98.53,0.0985,0.1701],[100.22,98.49,0.098,0.1672],[100.15,98.39,0.0974,0.1773],[100.02,98.24,0.0989,0.1808],[99.9,98.32,0.098,0.1757],[99.79,98.43,0.0979,0.1753],[99.67,98.55,0.0977,0.1761],[99.46,98.48,0.1003,0.176],[99.3,98.4,0.1026,0.1401],[99.09,98.28,0.1031,0.1401],[98.79,98.07,0.1056,0.1405],[98.42,97.82,0.1056,0.1264],[98.07,97.68,0.1055,0.1097],[97.79,97.69,0.1101,0.1099],[97.58,97.74,0.112,0.1186],[97.45,97.86,0.1112,0.1197],[97.39,98.02,0.1119,0.1199],[97.35,98.25,0.1117,0.1226],[97.29,98.4,0.1132,0.1218],[97.34,98.67,0.1127,0.1319],[97.39,99.0,0.1126,0.1336],[97.47,99.4,0.114,0.133],[97.59,99.82,0.115,0.1287],[97.67,100.16,0.114,0.1291],[97.76,100.45,0.1142,0.1282],[97.78,100.61,0.1158,0.129],[97.8,100.72,0.1149,0.1289]]},{"t":"XLE","name":"Energy","i":6,"pts":[[102.68,99.31,0.1391,0.2251],[102.58,99.21,0.1417,0.2164],[102.46,99.12,0.1412,0.22],[102.38,99.1,0.1389,0.22],[102.29,99.07,0.1378,0.2206],[102.19,99.05,0.1373,0.2228],[102.08,98.98,0.1374,0.2227],[102.02,99.0,0.1365,0.2254],[101.98,99.05,0.1424,0.2306],[101.96,99.09,0.149,0.2186],[101.9,99.13,0.1507,0.2002],[101.85,99.18,0.1538,0.189],[101.84,99.27,0.1573,0.181],[101.79,99.3,0.1625,0.1736],[101.75,99.33,0.1661,0.1809],[101.75,99.42,0.1687,0.1971],[101.77,99.54,0.1696,0.1802],[101.78,99.6,0.1714,0.1641],[101.76,99.61,0.1732,0.1636],[101.74,99.62,0.1751,0.1568],[101.76,99.68,0.1735,0.1481],[101.78,99.74,0.1734,0.1539],[101.81,99.76,0.1743,0.1513],[101.84,99.82,0.1775,0.1538],[101.92,99.9,0.1787,0.162],[101.94,99.9,0.1797,0.1622],[101.98,99.88,0.1823,0.1659],[102.04,99.9,0.1837,0.1668],[102.1,99.95,0.1775,0.1669],[102.09,99.94,0.1753,0.1693],[102.02,99.85,0.1775,0.2207],[101.95,99.75,0.1789,0.2207],[101.87,99.66,0.18,0.2211],[101.8,99.58,0.1797,0.22],[101.65,99.4,0.1833,0.2522],[101.51,99.26,0.1868,0.2437],[101.33,99.09,0.189,0.2429],[101.1,98.84,0.1926,0.2429],[100.86,98.58,0.1968,0.2523],[100.65,98.39,0.1971,0.2486],[100.5,98.34,0.1979,0.2552],[100.3,98.23,0.2039,0.2628],[100.1,98.09,0.2066,0.2631],[99.9,97.94,0.2085,0.2651],[99.78,97.96,0.2101,0.2573],[99.69,98.03,0.2097,0.2602],[99.59,98.14,0.2094,0.2514],[99.49,98.33,0.2095,0.24],[99.47,98.65,0.2125,0.2502],[99.48,99.0,0.2113,0.2642],[99.49,99.24,0.2055,0.2328],[99.52,99.62,0.2017,0.2372],[99.58,100.05,0.2012,0.2381],[99.59,100.41,0.1996,0.2363],[99.53,100.51,0.1942,0.2483],[99.42,100.49,0.192,0.2526],[99.31,100.48,0.1887,0.2521],[99.25,100.54,0.1861,0.2692],[99.16,100.46,0.1801,0.2593],[99.04,100.24,0.1778,0.2587],[98.93,100.05,0.1768,0.2554],[98.9,99.96,0.1668,0.2433],[98.88,99.85,0.1654,0.2485],[98.92,99.87,0.1629,0.2473],[98.98,100.09,0.1657,0.2652],[99.05,100.36,0.1693,0.2689],[99.13,100.66,0.1714,0.2689],[99.13,100.74,0.1723,0.2881],[99.09,100.79,0.1718,0.2873],[99.05,100.9,0.1717,0.2745],[99.0,100.97,0.1707,0.2728],[98.92,100.85,0.1715,0.2789],[98.82,100.71,0.1684,0.2801],[98.74,100.51,0.1702,0.2842],[98.71,100.36,0.1642,0.2424],[98.72,100.26,0.1567,0.2424],[98.74,100.16,0.1549,0.2436],[98.79,100.25,0.1539,0.2352],[98.9,100.49,0.1537,0.2396],[98.97,100.65,0.1549,0.2495],[99.06,100.87,0.1548,0.2494],[99.05,100.98,0.1559,0.2604],[99.04,101.09,0.1565,0.2473],[99.0,101.15,0.1555,0.2415],[98.93,101.09,0.151,0.2353],[98.87,100.99,0.1476,0.242],[98.83,100.89,0.1444,0.2427],[98.78,100.75,0.1434,0.2318],[98.69,100.45,0.1404,0.232],[98.65,100.3,0.1348,0.2321],[98.57,100.05,0.1336,0.2299],[98.53,100.02,0.1308,0.219],[98.47,99.96,0.1314,0.2123],[98.41,99.94,0.1266,0.2078],[98.37,99.99,0.1264,0.2072],[98.35,100.05,0.1306,0.2299],[98.32,100.08,0.1326,0.2354],[98.29,100.1,0.1311,0.2339],[98.27,100.18,0.1308,0.2272],[98.34,100.35,0.1333,0.2444],[98.48,100.7,0.1346,0.2432],[98.63,101.03,0.1328,0.2105],[98.85,101.51,0.1308,0.2115],[99.1,102.09,0.1311,0.2072],[99.4,102.69,0.1313,0.1945],[99.61,103.04,0.1312,0.1931],[99.8,103.27,0.1326,0.1948],[100.1,103.57,0.1326,0.1799],[100.4,103.71,0.1353,0.1792],[100.54,103.42,0.1404,0.1984],[100.63,103.06,0.1414,0.2055],[100.87,102.9,0.1412,0.2066],[101.03,102.62,0.1401,0.2029],[101.14,102.29,0.1413,0.2033],[101.15,101.85,0.1425,0.2118],[101.08,101.46,0.1409,0.1964],[100.9,101.0,0.1403,0.2062],[100.72,100.44,0.1416,0.2028],[100.47,99.8,0.1416,0.2087],[100.43,99.6,0.141,0.2416],[100.5,99.56,0.1408,0.2438],[100.45,99.22,0.1415,0.2404],[100.41,98.99,0.1415,0.2399],[100.42,98.87,0.1436,0.241],[100.59,99.05,0.1429,0.2423],[100.91,99.51,0.1444,0.2461],[101.28,100.14,0.1414,0.2453],[101.62,100.72,0.1401,0.2453],[101.96,101.35,0.1389,0.246],[102.09,101.49,0.1376,0.2336],[102.09,101.36,0.1408,0.2368],[102.09,101.37,0.1433,0.2307],[102.08,101.34,0.1485,0.2313],[102.04,101.24,0.1503,0.2302],[102.02,101.01,0.1536,0.2308],[101.98,100.61,0.156,0.2302],[101.96,100.18,0.1562,0.21],[101.87,99.7,0.1563,0.213],[101.79,99.25,0.1583,0.2105],[101.77,99.09,0.1552,0.1504],[101.83,99.16,0.1551,0.148],[101.86,99.21,0.1581,0.1514],[101.89,99.27,0.1606,0.1511],[101.89,99.32,0.1641,0.1519],[101.89,99.35,0.1665,0.164],[101.8,99.3,0.1698,0.1876],[101.71,99.23,0.1749,0.1889],[101.65,99.27,0.1748,0.1891],[101.54,99.24,0.1763,0.2059],[101.38,99.1,0.1771,0.2073]]},{"t":"XLU","name":"Utilities","i":7,"pts":[[101.12,102.0,0.0652,0.1668],[101.47,102.2,0.065,0.1689],[101.75,102.22,0.0642,0.1643],[102.14,102.36,0.0643,0.1623],[102.52,102.46,0.0647,0.1636],[102.74,102.39,0.0638,0.1609],[102.88,102.25,0.0641,0.1618],[102.93,101.98,0.066,0.1629],[102.82,101.55,0.0653,0.167],[102.73,101.11,0.0659,0.1572],[102.69,100.85,0.0661,0.1534],[102.59,100.51,0.0669,0.1568],[102.52,100.25,0.067,0.1585],[102.39,99.84,0.0665,0.1585],[102.25,99.42,0.0659,0.1624],[102.13,99.11,0.0647,0.16],[102.06,98.88,0.0646,0.1592],[102.01,98.72,0.0649,0.1551],[101.96,98.71,0.0635,0.1253],[101.9,98.68,0.0631,0.1253],[101.87,98.64,0.063,0.1137],[101.84,98.68,0.063,0.1093],[101.73,98.63,0.0645,0.1781],[101.64,98.67,0.0638,0.1798],[101.59,98.77,0.063,0.1766],[101.56,98.88,0.0627,0.1767],[101.52,98.92,0.0618,0.1769],[101.5,98.98,0.0604,0.1725],[101.51,99.05,0.0613,0.1739],[101.47,99.09,0.0608,0.1729],[101.42,99.09,0.0609,0.1731],[101.38,99.1,0.0609,0.1723],[101.38,99.22,0.0619,0.1723],[101.38,99.31,0.0624,0.1723],[101.34,99.33,0.0627,0.1751],[101.31,99.34,0.0641,0.1735],[101.24,99.32,0.0647,0.1732],[101.07,99.21,0.0641,0.1756],[100.87,99.04,0.0652,0.1741],[100.7,98.95,0.0662,0.1769],[100.55,98.89,0.0667,0.1766],[100.35,98.79,0.0662,0.1766],[100.15,98.67,0.065,0.1038],[99.91,98.53,0.0658,0.1184],[99.68,98.44,0.0668,0.1159],[99.51,98.39,0.0676,0.1496],[99.32,98.38,0.0696,0.1496],[99.19,98.46,0.07,0.1486],[99.08,98.58,0.0695,0.1467],[98.98,98.68,0.068,0.1532],[98.91,98.78,0.0691,0.1768],[98.85,98.91,0.0695,0.1779],[98.8,99.05,0.0694,0.1779],[98.76,99.2,0.0705,0.1778],[98.68,99.33,0.0724,0.1798],[98.49,99.33,0.0718,0.1811],[98.28,99.34,0.072,0.1825],[98.11,99.34,0.0728,0.1832],[97.97,99.33,0.0726,0.1831],[97.85,99.35,0.0734,0.1842],[97.72,99.34,0.072,0.1832],[97.63,99.34,0.0734,0.1976],[97.57,99.36,0.0747,0.1966],[97.59,99.42,0.0746,0.1916],[97.66,99.57,0.0727,0.1921],[97.76,99.86,0.0721,0.1698],[97.89,100.26,0.0706,0.1723],[97.98,100.66,0.0702,0.1722],[98.05,101.09,0.0698,0.1724],[98.12,101.51,0.0705,0.1716],[98.17,101.96,0.0705,0.1416],[98.19,102.24,0.0714,0.1696],[98.23,102.42,0.0727,0.1864],[98.24,102.35,0.0723,0.1862],[98.27,102.17,0.0712,0.1834],[98.33,102.01,0.0696,0.1828],[98.36,101.76,0.0695,0.1912],[98.4,101.63,0.0674,0.1921],[98.48,101.57,0.0656,0.192],[98.55,101.52,0.0633,0.1885],[98.63,101.5,0.0625,0.1917],[98.73,101.55,0.0618,0.1736],[98.83,101.56,0.0601,0.1749],[98.91,101.59,0.0594,0.1795],[98.99,101.59,0.0627,0.1805],[99.02,101.5,0.0632,0.1774],[99.12,101.53,0.0635,0.1774],[99.21,101.53,0.0638,0.181],[99.29,101.47,0.0647,0.1813],[99.41,101.48,0.0647,0.1767],[99.49,101.44,0.0642,0.1763],[99.56,101.35,0.064,0.1475],[99.6,101.25,0.064,0.1452],[99.67,101.2,0.0643,0.1602],[99.72,101.15,0.0645,0.1657],[99.79,101.15,0.0652,0.1654],[99.8,101.04,0.0642,0.1518],[99.77,100.88,0.0659,0.1509],[99.72,100.73,0.0668,0.1516],[99.66,100.53,0.0676,0.1525],[99.64,100.4,0.0682,0.1495],[99.63,100.3,0.068,0.1545],[99.69,100.3,0.0683,0.1538],[99.69,100.2,0.0689,0.1476],[99.73,100.17,0.0668,0.1477],[99.7,100.04,0.0667,0.1466],[99.77,100.06,0.0675,0.1639],[99.94,100.28,0.0669,0.1612],[100.13,100.54,0.0667,0.1598],[100.22,100.7,0.0667,0.1643],[100.31,100.82,0.0664,0.1642],[100.47,101.03,0.0662,0.1628],[100.51,100.98,0.0654,0.1579],[100.47,100.9,0.0654,0.1371],[100.39,100.68,0.0666,0.1336],[100.2,100.43,0.0673,0.1295],[99.81,99.69,0.0695,0.1314],[99.23,98.45,0.0708,0.1319],[98.6,97.23,0.0716,0.1312],[98.02,96.48,0.0735,0.1306],[97.63,96.23,0.0747,0.1398],[97.34,96.14,0.0761,0.1386],[97.23,96.4,0.0771,0.1381],[97.26,96.78,0.0784,0.1392],[97.36,97.18,0.078,0.1386],[97.56,97.66,0.0781,0.1389],[97.74,98.23,0.0762,0.1098],[97.93,98.92,0.0773,0.1067],[98.0,99.52,0.0781,0.1258],[98.15,100.13,0.0791,0.1305],[98.22,100.52,0.08,0.1315],[98.3,100.82,0.0802,0.1273],[98.33,100.93,0.0802,0.1283],[98.3,100.87,0.0813,0.1306],[98.24,100.73,0.0834,0.1347],[98.22,100.55,0.0854,0.1386],[98.21,100.39,0.0865,0.1359],[98.18,100.21,0.0853,0.1382],[98.26,100.22,0.0852,0.1368],[98.33,100.16,0.0829,0.1348],[98.37,100.14,0.0814,0.1346],[98.4,100.11,0.0813,0.1364],[98.44,100.12,0.0802,0.1347],[98.47,100.18,0.0792,0.137],[98.5,100.26,0.0798,0.1406],[98.51,100.29,0.079,0.1411],[98.52,100.32,0.0808,0.1469],[98.5,100.33,0.0808,0.1519],[98.43,100.21,0.0801,0.1339],[98.32,100.08,0.078,0.1257]]},{"t":"XLRE","name":"Real Estate","i":8,"pts":[[103.0,103.25,0.0196,0.1493],[103.07,103.05,0.0194,0.1505],[103.06,102.66,0.0191,0.1455],[103.11,102.41,0.019,0.1457],[103.09,102.08,0.0191,0.1451],[102.91,101.48,0.0193,0.1487],[102.8,100.94,0.0193,0.1418],[102.68,100.38,0.0196,0.1378],[102.52,99.76,0.0195,0.1378],[102.36,99.06,0.019,0.1311],[102.26,98.74,0.0193,0.1288],[102.17,98.62,0.0195,0.1282],[102.09,98.57,0.0199,0.1329],[101.95,98.44,0.02,0.1187],[101.84,98.38,0.0202,0.1176],[101.76,98.48,0.0199,0.1151],[101.68,98.5,0.0191,0.1169],[101.61,98.55,0.0186,0.1172],[101.53,98.63,0.0187,0.1079],[101.44,98.7,0.0185,0.1014],[101.37,98.74,0.0181,0.1062],[101.32,98.79,0.0181,0.106],[101.21,98.79,0.0186,0.1433],[101.11,98.84,0.0191,0.1475],[101.0,98.87,0.0189,0.1468],[100.91,98.89,0.0189,0.1468],[100.85,98.93,0.0194,0.1448],[100.8,98.98,0.0189,0.1419],[100.79,99.05,0.0193,0.144],[100.72,99.09,0.0198,0.1588],[100.66,99.11,0.0199,0.1595],[100.64,99.16,0.0202,0.1703],[100.68,99.29,0.0202,0.1682],[100.72,99.41,0.0203,0.1678],[100.76,99.53,0.0202,0.1794],[100.82,99.65,0.0202,0.1756],[100.83,99.7,0.0208,0.1737],[100.78,99.71,0.0207,0.1741],[100.69,99.66,0.0204,0.175],[100.61,99.66,0.0201,0.175],[100.58,99.7,0.0202,0.1647],[100.51,99.67,0.0199,0.1694],[100.45,99.61,0.0194,0.1113],[100.35,99.52,0.0188,0.1392],[100.2,99.4,0.0186,0.1383],[100.12,99.31,0.0181,0.1398],[99.97,99.21,0.017,0.1415],[99.79,99.14,0.0173,0.1424],[99.68,99.16,0.0169,0.1436],[99.57,99.16,0.0173,0.1422],[99.45,99.1,0.0174,0.1503],[99.26,99.04,0.0176,0.1449],[98.99,98.91,0.0173,0.1479],[98.75,98.83,0.0175,0.1473],[98.58,98.85,0.0176,0.1427],[98.26,98.72,0.0178,0.1461],[97.97,98.66,0.0175,0.1462],[97.8,98.72,0.0175,0.146],[97.6,98.69,0.0174,0.1433],[97.45,98.68,0.018,0.1471],[97.22,98.6,0.0181,0.1462],[97.09,98.62,0.0185,0.1448],[97.1,98.84,0.0185,0.1512],[97.22,99.18,0.0182,0.1366],[97.34,99.48,0.0178,0.1387],[97.46,100.08,0.0177,0.1335],[97.59,100.79,0.0178,0.1329],[97.68,101.28,0.0178,0.1293],[97.74,101.75,0.0172,0.1261],[97.81,102.04,0.0161,0.1253],[97.89,102.38,0.016,0.1148],[97.89,102.41,0.0155,0.1273],[97.86,102.21,0.0158,0.1281],[97.82,101.89,0.0156,0.1278],[97.85,101.7,0.0156,0.14],[98.0,101.66,0.0151,0.1395],[98.08,101.53,0.0153,0.1493],[98.25,101.57,0.0151,0.1668],[98.48,101.7,0.015,0.1668],[98.66,101.75,0.0149,0.1639],[98.89,101.84,0.0146,0.1642],[99.09,101.96,0.0146,0.1564],[99.3,102.11,0.0145,0.1521],[99.44,102.16,0.0154,0.1773],[99.46,102.04,0.0157,0.1728],[99.41,101.75,0.0159,0.1785],[99.54,101.73,0.0157,0.1851],[99.57,101.53,0.0157,0.1851],[99.53,101.24,0.0162,0.1851],[99.66,101.15,0.0165,0.1901],[99.67,100.92,0.0163,0.1886],[99.67,100.73,0.0171,0.193],[99.66,100.51,0.0173,0.1927],[99.76,100.46,0.0172,0.1958],[99.84,100.51,0.0175,0.1866],[99.93,100.63,0.0177,0.191],[99.84,100.42,0.0175,0.1926],[99.71,100.28,0.0176,0.1774],[99.59,100.2,0.0178,0.1783],[99.41,99.93,0.0179,0.1793],[99.3,99.83,0.018,0.1767],[99.33,99.86,0.018,0.1746],[99.48,100.0,0.0181,0.188],[99.62,100.03,0.0171,0.1628],[99.86,100.17,0.017,0.1635],[99.94,100.14,0.017,0.1592],[100.09,100.35,0.0174,0.1533],[100.38,100.69,0.0174,0.153],[100.84,101.18,0.0173,0.1704],[101.18,101.58,0.0173,0.1646],[101.61,101.95,0.0174,0.163],[102.15,102.24,0.0167,0.1443],[102.19,102.05,0.0165,0.1551],[102.05,101.76,0.0169,0.1521],[101.86,101.37,0.017,0.1484],[101.62,101.08,0.0171,0.1413],[101.41,100.76,0.0176,0.1273],[101.08,100.21,0.018,0.1317],[100.57,99.31,0.0181,0.1313],[100.0,98.42,0.0184,0.1379],[99.37,97.44,0.0189,0.139],[98.7,96.54,0.0193,0.1429],[98.36,96.52,0.0198,0.1334],[98.19,96.76,0.0204,0.1339],[98.08,97.06,0.0214,0.1374],[98.11,97.43,0.0219,0.1381],[98.16,97.73,0.0216,0.1406],[98.31,98.13,0.0217,0.1406],[98.44,98.57,0.0216,0.1155],[98.68,99.09,0.0217,0.1169],[98.91,99.63,0.0215,0.115],[99.05,100.13,0.0217,0.1165],[99.04,100.33,0.0217,0.1105],[98.98,100.4,0.0215,0.11],[98.91,100.42,0.0218,0.1125],[98.87,100.37,0.0222,0.1125],[98.72,100.25,0.0227,0.114],[98.54,100.05,0.0225,0.12],[98.38,99.88,0.0224,0.121],[98.23,99.66,0.022,0.1132],[98.08,99.45,0.0218,0.1169],[97.99,99.32,0.0215,0.1137],[97.99,99.36,0.0211,0.1052],[98.0,99.42,0.0209,0.1048],[98.04,99.51,0.0199,0.1014],[98.06,99.57,0.0193,0.102],[98.09,99.7,0.0195,0.0971],[98.06,99.82,0.0196,0.0989],[98.04,99.91,0.0197,0.1079],[97.99,99.99,0.0193,0.104]]},{"t":"XLB","name":"Materials","i":9,"pts":[[102.3,99.36,0.0513,0.2106],[102.21,99.23,0.052,0.203],[102.15,99.2,0.0521,0.2029],[102.11,99.22,0.0512,0.2022],[102.06,99.18,0.0505,0.2027],[101.97,99.01,0.0507,0.2045],[101.86,98.81,0.0507,0.2047],[101.79,98.69,0.05,0.2051],[101.7,98.53,0.048,0.196],[101.62,98.44,0.0464,0.2188],[101.52,98.43,0.0453,0.2079],[101.42,98.46,0.0439,0.205],[101.31,98.46,0.0439,0.1942],[101.18,98.41,0.0445,0.1798],[101.06,98.38,0.0444,0.172],[100.96,98.43,0.0437,0.1617],[100.88,98.51,0.0427,0.1504],[100.77,98.52,0.0421,0.1468],[100.66,98.54,0.0421,0.1425],[100.57,98.58,0.0417,0.1411],[100.48,98.64,0.0421,0.1498],[100.4,98.71,0.042,0.1544],[100.32,98.79,0.0414,0.1563],[100.27,98.9,0.0412,0.1738],[100.26,99.05,0.0412,0.1881],[100.28,99.19,0.0413,0.206],[100.3,99.33,0.041,0.2061],[100.36,99.55,0.0408,0.202],[100.45,99.82,0.0413,0.2038],[100.53,100.04,0.0415,0.2021],[100.63,100.31,0.0413,0.2059],[100.76,100.63,0.0416,0.1928],[100.88,100.92,0.0414,0.1807],[100.98,101.15,0.0413,0.181],[101.05,101.28,0.0414,0.2135],[101.07,101.29,0.0413,0.2136],[101.06,101.29,0.041,0.213],[101.0,101.17,0.0408,0.2082],[100.86,100.89,0.0401,0.2094],[100.69,100.57,0.0414,0.2158],[100.51,100.18,0.0416,0.199],[100.29,99.63,0.0408,0.187],[100.13,99.17,0.0413,0.1717],[99.96,98.71,0.0416,0.1736],[99.71,98.21,0.0414,0.1655],[99.5,97.92,0.0416,0.1547],[99.23,97.61,0.0416,0.1513],[98.95,97.45,0.0425,0.1508],[98.73,97.5,0.0425,0.1548],[98.56,97.67,0.0423,0.1482],[98.38,97.8,0.0431,0.1484],[98.25,98.01,0.0426,0.1487],[98.05,98.06,0.0422,0.1564],[97.93,98.21,0.0427,0.1663],[97.9,98.53,0.0423,0.1333],[97.81,98.72,0.0431,0.15],[97.75,99.02,0.0433,0.1492],[97.78,99.41,0.043,0.1555],[97.83,99.74,0.0434,0.1552],[97.87,100.01,0.0413,0.1488],[97.86,100.23,0.0411,0.1494],[97.82,100.37,0.0413,0.1748],[97.82,100.62,0.0408,0.1722],[97.74,100.67,0.0409,0.1865],[97.67,100.64,0.0423,0.1948],[97.68,100.76,0.0418,0.1967],[97.7,100.84,0.0417,0.1978],[97.71,100.81,0.0416,0.2048],[97.74,100.77,0.041,0.2039],[97.77,100.75,0.0415,0.2018],[97.83,100.81,0.0408,0.1993],[97.91,100.92,0.0429,0.1998],[98.0,101.01,0.0448,0.1978],[98.15,101.24,0.0445,0.1886],[98.26,101.41,0.0446,0.1783],[98.38,101.48,0.0437,0.1782],[98.45,101.47,0.0439,0.1825],[98.54,101.5,0.0437,0.1861],[98.6,101.48,0.0432,0.2006],[98.69,101.48,0.0432,0.2345],[98.82,101.5,0.0436,0.2424],[98.94,101.48,0.0442,0.2218],[99.05,101.44,0.0442,0.2215],[99.13,101.33,0.0447,0.2088],[99.19,101.23,0.0435,0.2063],[99.24,101.13,0.0434,0.2059],[99.32,101.1,0.0435,0.213],[99.38,101.04,0.0438,0.2085],[99.47,101.05,0.0443,0.2129],[99.54,101.0,0.044,0.2136],[99.5,100.82,0.0443,0.2228],[99.48,100.69,0.0424,0.2225],[99.45,100.56,0.0411,0.219],[99.46,100.5,0.0409,0.2292],[99.49,100.48,0.0428,0.2292],[99.5,100.45,0.0435,0.2207],[99.45,100.33,0.0437,0.2354],[99.36,100.2,0.0443,0.2285],[99.24,100.01,0.0449,0.2166],[99.12,99.82,0.0451,0.1858],[99.09,99.84,0.0442,0.1725],[99.04,99.82,0.0437,0.1704],[99.03,99.83,0.0437,0.1724],[98.94,99.72,0.0426,0.1683],[98.85,99.59,0.043,0.1708],[98.75,99.46,0.0435,0.171],[98.8,99.53,0.0444,0.1723],[98.9,99.69,0.0443,0.1746],[99.04,99.92,0.045,0.1818],[99.19,100.2,0.0453,0.1814],[99.45,100.51,0.0452,0.1798],[99.79,100.96,0.0456,0.1853],[99.98,101.22,0.0452,0.1853],[99.98,101.34,0.0469,0.1899],[100.02,101.51,0.0452,0.1951],[100.12,101.79,0.0458,0.2047],[100.21,101.83,0.0459,0.1835],[100.23,101.69,0.0457,0.1878],[100.16,101.32,0.047,0.1883],[100.12,100.97,0.048,0.1864],[99.96,100.25,0.0493,0.1864],[99.6,99.06,0.0498,0.1927],[99.29,98.25,0.051,0.1931],[99.34,98.37,0.0522,0.1908],[99.4,98.45,0.0516,0.1881],[99.43,98.38,0.0511,0.1919],[99.43,98.29,0.0505,0.1918],[99.55,98.49,0.0506,0.1872],[99.77,98.94,0.0513,0.1898],[99.95,99.29,0.0526,0.1898],[100.06,99.69,0.0529,0.1803],[100.33,100.63,0.0532,0.1743],[100.58,101.42,0.0536,0.1774],[100.77,101.58,0.0535,0.1528],[100.91,101.63,0.0544,0.1545],[101.02,101.68,0.055,0.1469],[101.12,101.77,0.0555,0.1525],[100.98,101.37,0.0567,0.1507],[100.67,100.66,0.0561,0.1438],[100.27,99.9,0.0552,0.1451],[99.86,99.23,0.055,0.1484],[99.38,98.29,0.0542,0.1483],[99.03,97.66,0.0535,0.1489],[98.65,97.18,0.053,0.1497],[98.44,97.06,0.053,0.1508],[98.28,97.06,0.0525,0.1499],[97.97,96.96,0.0526,0.1422],[97.71,97.13,0.0523,0.1487],[97.35,97.31,0.0509,0.1214],[97.21,97.68,0.0492,0.1392]]},{"t":"XLC","name":"Communication Svcs","i":10,"pts":[[99.15,97.71,0.0456,0.1591],[98.91,97.39,0.0455,0.156],[98.68,97.18,0.0458,0.1564],[98.78,97.65,0.0459,0.1607],[98.8,97.94,0.0456,0.1607],[98.62,97.78,0.046,0.1592],[98.68,97.92,0.0452,0.1592],[99.04,98.65,0.0447,0.1354],[99.38,99.44,0.0432,0.1349],[99.93,100.35,0.043,0.1347],[100.54,101.26,0.0438,0.1247],[101.05,101.89,0.0435,0.1216],[101.5,102.37,0.0426,0.124],[101.82,102.41,0.0426,0.123],[102.1,102.45,0.0427,0.1188],[102.38,102.61,0.0428,0.1175],[102.51,102.48,0.0428,0.1258],[102.39,102.04,0.0448,0.1117],[102.29,101.67,0.0455,0.1149],[102.08,101.14,0.0467,0.1147],[101.89,100.61,0.0472,0.1261],[101.67,100.13,0.0479,0.1254],[101.48,99.72,0.0476,0.1146],[101.36,99.45,0.0472,0.1125],[101.14,99.14,0.0476,0.1172],[100.92,98.86,0.0474,0.1171],[100.64,98.65,0.0483,0.1377],[100.39,98.61,0.0488,0.1337],[100.3,98.67,0.0496,0.1411],[100.22,98.79,0.0497,0.177],[100.1,98.86,0.0495,0.1749],[100.03,98.99,0.0497,0.1766],[99.86,99.03,0.0495,0.1757],[99.71,99.04,0.0493,0.1757],[99.61,99.14,0.0478,0.1889],[99.52,99.23,0.0477,0.1897],[99.47,99.38,0.0477,0.1831],[99.39,99.48,0.0465,0.1833],[99.2,99.43,0.0462,0.1888],[99.03,99.39,0.0453,0.19],[99.01,99.44,0.0449,0.1846],[98.85,99.39,0.0434,0.1828],[98.72,99.42,0.0432,0.1798],[98.53,99.39,0.0433,0.1877],[98.39,99.37,0.0422,0.1788],[98.28,99.36,0.0416,0.1805],[97.98,99.22,0.0407,0.1677],[97.76,99.16,0.0402,0.1523],[97.61,99.19,0.0394,0.1521],[97.49,99.24,0.0392,0.128],[97.33,99.2,0.0388,0.1314],[97.29,99.29,0.0402,0.1312],[97.26,99.37,0.0404,0.1337],[97.23,99.48,0.0412,0.1353],[97.25,99.59,0.0424,0.1312],[97.29,99.7,0.0422,0.131],[97.39,99.96,0.0428,0.1314],[97.41,100.11,0.0427,0.1365],[97.44,100.22,0.0423,0.1258],[97.49,100.31,0.0421,0.1265],[97.52,100.41,0.0421,0.1185],[97.57,100.44,0.0431,0.1211],[97.65,100.48,0.043,0.1248],[97.75,100.54,0.0433,0.1207],[97.81,100.54,0.0435,0.1187],[97.85,100.52,0.0443,0.118],[97.89,100.47,0.0441,0.1061],[97.96,100.47,0.0438,0.1058],[98.03,100.49,0.0439,0.1079],[98.08,100.48,0.0437,0.1074],[98.11,100.49,0.0439,0.1052],[98.12,100.5,0.042,0.1049],[98.07,100.45,0.0424,0.1198],[98.02,100.4,0.042,0.1265],[98.0,100.4,0.0421,0.1185],[98.02,100.47,0.0432,0.124],[98.04,100.55,0.0448,0.1243],[98.09,100.63,0.0444,0.1214],[98.14,100.73,0.0443,0.1207],[98.18,100.8,0.0442,0.1232],[98.22,100.86,0.0452,0.122],[98.24,100.88,0.0459,0.1221],[98.3,101.01,0.0472,0.1177],[98.35,101.1,0.0482,0.1459],[98.37,101.1,0.0508,0.1459],[98.32,100.99,0.0516,0.1584],[98.33,100.94,0.0523,0.1605],[98.31,100.85,0.0534,0.1601],[98.25,100.69,0.0535,0.1567],[98.24,100.6,0.055,0.1583],[98.24,100.54,0.0554,0.1727],[98.24,100.49,0.0563,0.1728],[98.27,100.42,0.0589,0.1901],[98.33,100.41,0.0594,0.1853],[98.39,100.45,0.0604,0.1833],[98.51,100.63,0.0609,0.1804],[98.56,100.67,0.0593,0.186],[98.63,100.75,0.0608,0.1889],[98.72,100.92,0.0625,0.1916],[98.8,101.01,0.0637,0.1885],[98.86,101.07,0.0632,0.1879],[98.99,101.19,0.0633,0.1966],[99.05,101.2,0.0627,0.1982],[99.1,101.15,0.0626,0.1827],[99.17,101.12,0.0605,0.1826],[99.17,100.94,0.0599,0.1671],[99.18,100.85,0.0595,0.1697],[99.13,100.67,0.0613,0.2093],[99.09,100.44,0.0619,0.2092],[99.06,100.22,0.0614,0.2128],[99.07,100.08,0.0608,0.2154],[99.1,99.82,0.061,0.2137],[99.0,99.34,0.0591,0.217],[98.94,98.93,0.0583,0.2248],[98.92,98.49,0.0579,0.2459],[98.91,98.22,0.0564,0.2455],[98.88,98.01,0.0568,0.2431],[98.95,98.35,0.0557,0.2412],[98.97,98.57,0.0543,0.2385],[98.97,98.7,0.0538,0.2392],[98.9,98.46,0.0537,0.2398],[98.74,97.94,0.0544,0.2331],[98.79,98.49,0.0548,0.2442],[98.83,98.83,0.0541,0.2356],[98.75,98.7,0.0538,0.2455],[98.73,98.73,0.0536,0.2445],[98.77,98.96,0.0524,0.2439],[98.79,98.88,0.0488,0.2078],[98.85,99.03,0.0484,0.2071],[98.94,99.35,0.0477,0.2048],[99.06,100.0,0.0474,0.197],[99.23,101.12,0.0473,0.1981],[99.23,100.97,0.0455,0.1758],[99.31,101.08,0.0457,0.1745],[99.41,101.63,0.044,0.1538],[99.51,101.92,0.0445,0.1531],[99.64,102.11,0.0444,0.1563],[99.75,102.22,0.0441,0.1585],[99.79,102.03,0.0438,0.1647],[99.73,101.56,0.0439,0.1646],[99.62,100.88,0.0442,0.1651],[99.66,100.51,0.0434,0.1631],[99.88,101.09,0.0424,0.1501],[100.25,101.81,0.0421,0.1679],[100.72,102.59,0.0428,0.1563],[101.13,103.05,0.0423,0.1598],[101.21,102.7,0.0433,0.1598],[101.11,102.12,0.0446,0.1659],[101.35,102.39,0.0462,0.213],[101.43,102.45,0.047,0.2157]]}]}},"alerts":[{"date":"2026-09-22","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-09-22","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-09-22","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-09-22","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-09-21","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-09-18","tf":"daily","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-09-18","tf":"daily","ticker":"XLF","sector":"Financials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-09-18","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-09-18","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-09-18","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2026-09-18","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-09-18","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-09-17","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-09-17","tf":"daily","ticker":"XLI","sector":"Industrials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-09-14","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-09-11","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-09-11","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-09-11","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-09-11","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-09-11","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-09-11","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-09-09","tf":"daily","ticker":"XLB","sector":"Materials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-09-08","tf":"daily","ticker":"XLB","sector":"Materials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-09-08","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-09-04","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-09-04","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-09-04","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-09-04","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-09-04","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-09-04","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-09-04","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-09-04","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2026-09-03","tf":"daily","ticker":"XLB","sector":"Materials","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-09-03","tf":"daily","ticker":"XLE","sector":"Energy","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-09-02","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-09-02","tf":"daily","ticker":"XLK","sector":"Technology","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-09-01","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-08-31","tf":"daily","ticker":"XLK","sector":"Technology","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-28","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-28","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-28","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Lagging \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-08-28","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-28","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-08-27","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-26","tf":"daily","ticker":"XLB","sector":"Materials","body":"Weakening \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-08-26","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-08-26","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-08-25","tf":"daily","ticker":"XLB","sector":"Materials","body":"Lagging \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-08-25","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"Weakening \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-08-24","tf":"daily","ticker":"XLU","sector":"Utilities","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-08-21","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-21","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-21","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-21","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-08-21","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-08-21","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2026-08-21","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-08-20","tf":"daily","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-20","tf":"daily","ticker":"XLI","sector":"Industrials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-19","tf":"daily","ticker":"XLE","sector":"Energy","body":"Weakening \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-08-18","tf":"daily","ticker":"XLK","sector":"Technology","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-08-17","tf":"daily","ticker":"XLE","sector":"Energy","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2026-08-14","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-14","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Leading \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-08-14","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-13","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-13","tf":"daily","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-12","tf":"daily","ticker":"XLB","sector":"Materials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-11","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-11","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-11","tf":"daily","ticker":"XLK","sector":"Technology","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-08-07","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-08-07","tf":"daily","ticker":"XLE","sector":"Energy","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-08-07","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-08-07","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-08-07","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-08-06","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-08-06","tf":"daily","ticker":"XLI","sector":"Industrials","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2026-08-06","tf":"daily","ticker":"XLI","sector":"Industrials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-08-06","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2026-08-05","tf":"daily","ticker":"XLU","sector":"Utilities","body":"Leading \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-07-31","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-07-31","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-07-31","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-07-31","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-07-31","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-07-30","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-07-30","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-07-30","tf":"daily","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-07-29","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-07-29","tf":"daily","ticker":"XLF","sector":"Financials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-07-28","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-07-27","tf":"daily","ticker":"XLB","sector":"Materials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-07-27","tf":"daily","ticker":"XLE","sector":"Energy","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-07-27","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2026-07-24","tf":"daily","ticker":"XLU","sector":"Utilities","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-07-24","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-07-24","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-07-24","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-07-24","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-07-24","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-07-23","tf":"daily","ticker":"XLE","sector":"Energy","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-07-23","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-07-22","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-07-22","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-07-21","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-07-20","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-07-17","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-07-17","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-07-17","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-07-17","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-07-15","tf":"daily","ticker":"XLI","sector":"Industrials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-07-13","tf":"daily","ticker":"XLB","sector":"Materials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-07-13","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-07-13","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-07-10","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-07-08","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-07-07","tf":"daily","ticker":"XLE","sector":"Energy","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-07-03","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-07-03","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-07-03","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-07-03","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-07-03","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-07-03","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-07-03","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-07-03","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-06-26","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-06-26","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-06-26","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-06-24","tf":"daily","ticker":"XLF","sector":"Financials","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-06-19","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-06-19","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-06-19","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-06-19","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-06-12","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-06-12","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-06-12","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-06-12","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2026-06-05","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-06-05","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-06-05","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-06-05","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-06-05","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-06-05","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-06-02","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-05-29","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-27","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-22","tf":"daily","ticker":"XLU","sector":"Utilities","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-22","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-22","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-05-22","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-22","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-05-22","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-05-21","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-21","tf":"daily","ticker":"XLI","sector":"Industrials","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-05-21","tf":"daily","ticker":"XLF","sector":"Financials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-20","tf":"daily","ticker":"XLE","sector":"Energy","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-20","tf":"daily","ticker":"XLI","sector":"Industrials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-05-15","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-05-15","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-05-15","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-05-15","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-05-12","tf":"daily","ticker":"XLI","sector":"Industrials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-11","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-08","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-05-08","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-05-08","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-05","tf":"daily","ticker":"XLI","sector":"Industrials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-05-04","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-05-04","tf":"daily","ticker":"XLK","sector":"Technology","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-05-01","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-05-01","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-05-01","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-05-01","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-05-01","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-05-01","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-05-01","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-04-30","tf":"daily","ticker":"XLI","sector":"Industrials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-04-24","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2026-04-24","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-21","tf":"daily","ticker":"XLU","sector":"Utilities","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-21","tf":"daily","ticker":"XLE","sector":"Energy","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-20","tf":"daily","ticker":"XLF","sector":"Financials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-17","tf":"daily","ticker":"XLB","sector":"Materials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-04-17","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-04-17","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-04-17","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-17","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-04-14","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-13","tf":"daily","ticker":"XLP","sector":"Cons. Staples","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-13","tf":"daily","ticker":"XLK","sector":"Technology","body":"Lagging \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-04-10","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-10","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-04-06","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-04-03","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-04-03","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-04-01","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-04-01","tf":"daily","ticker":"XLK","sector":"Technology","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-03-27","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-03-27","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-03-27","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-03-20","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-03-20","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-03-20","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-03-20","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-03-20","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-03-19","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-03-16","tf":"daily","ticker":"XLV","sector":"Healthcare","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-03-13","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-03-09","tf":"daily","ticker":"XLU","sector":"Utilities","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-03-09","tf":"daily","ticker":"XLF","sector":"Financials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-03-06","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-03-06","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-03-06","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-03-06","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2026-03-06","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-03-06","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-03-05","tf":"daily","ticker":"XLY","sector":"Cons. Discretionary","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-03-04","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-03-03","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-03-02","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-02-27","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Leading \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-02-27","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2026-02-27","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-02-27","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-02-25","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-02-23","tf":"daily","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-02-20","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-02-20","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-02-20","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-02-19","tf":"daily","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-02-13","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-02-13","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-02-13","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-02-13","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-02-13","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Weakening \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Leading \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Leading \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2026-02-06","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-01-30","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-01-30","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-01-30","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2026-01-30","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-01-30","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2026-01-30","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-01-23","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-01-23","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-01-23","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2026-01-16","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Leading \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-01-16","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-01-16","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-01-16","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Lagging \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-01-16","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2026-01-16","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2026-01-09","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-01-09","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-01-09","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-01-09","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-01-02","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2026-01-02","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-01-02","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-01-02","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2026-01-02","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2026-01-02","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2026-01-02","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2025-12-26","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-12-26","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-12-26","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-12-26","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-12-19","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2025-12-19","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-12-19","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Leading \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-12-19","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-12-12","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-12-12","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-12-12","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-12-12","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-12-05","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-12-05","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-12-05","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-12-05","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-12-05","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2025-12-05","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-12-05","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-11-28","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-11-28","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-11-28","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-11-28","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-11-21","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-11-21","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-11-21","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-11-14","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2025-11-14","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-11-14","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-11-14","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-11-07","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-11-07","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-10-31","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-10-31","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-10-31","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-10-24","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-10-24","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-10-24","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-10-24","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-10-17","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-10-17","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-10-17","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-10-17","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-10-17","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-10-10","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-10-10","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-10-10","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-10-10","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-10-10","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-10-10","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-10-10","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-10-03","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-10-03","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-10-03","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-09-26","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-09-26","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-09-26","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-09-26","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-09-26","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-09-26","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Weakening \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-09-19","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-09-19","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-09-19","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-09-19","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-09-19","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-09-19","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-09-19","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Lagging \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-09-12","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-09-12","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-09-12","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-09-12","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-09-05","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2025-09-05","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-08-29","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-08-29","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-08-29","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-08-29","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-08-29","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-08-29","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-08-29","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-08-15","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-08-15","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-08-15","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Leading \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-08-08","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-08-08","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-08-01","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-08-01","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-08-01","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Improving \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-08-01","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-07-25","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Improving","crossing":false,"confirmed":false},{"date":"2025-07-25","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Weakening \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-07-25","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-07-18","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-07-18","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-07-11","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-07-11","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-07-11","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned DOWN in Improving","crossing":false,"confirmed":false},{"date":"2025-07-11","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-07-04","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-07-04","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-07-04","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-07-04","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-07-04","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-06-27","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2025-06-27","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-06-27","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-06-20","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-06-20","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Leading \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-06-13","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-06-13","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-06-13","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-06-13","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Lagging \u2192 Improving","crossing":true,"confirmed":false},{"date":"2025-06-13","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-06-06","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-06-06","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-05-30","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2025-05-30","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2025-05-30","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Leading","crossing":false,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Lagging \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLY","sector":"Cons. Discretionary","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-05-23","tf":"weekly","ticker":"XLK","sector":"Technology","body":"momentum turned DOWN in Leading","crossing":false,"confirmed":false},{"date":"2025-05-16","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-05-16","tf":"weekly","ticker":"XLB","sector":"Materials","body":"momentum turned DOWN in Lagging","crossing":false,"confirmed":false},{"date":"2025-05-16","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-05-16","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2025-05-16","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2025-05-16","tf":"weekly","ticker":"XLK","sector":"Technology","body":"Improving \u2192 Leading","crossing":true,"confirmed":false},{"date":"2025-05-09","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-05-09","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-05-09","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-05-09","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-05-02","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2025-05-02","tf":"weekly","ticker":"XLE","sector":"Energy","body":"momentum turned UP in Lagging","crossing":false,"confirmed":false},{"date":"2025-05-02","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-04-25","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Weakening \u2192 Lagging","crossing":true,"confirmed":false},{"date":"2025-04-25","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2025-04-18","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-04-18","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-04-18","tf":"weekly","ticker":"XLV","sector":"Healthcare","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-04-11","tf":"weekly","ticker":"XLC","sector":"Communication Svcs","body":"momentum turned UP in Weakening","crossing":false,"confirmed":false},{"date":"2025-04-11","tf":"weekly","ticker":"XLB","sector":"Materials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-04-11","tf":"weekly","ticker":"XLU","sector":"Utilities","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-04-11","tf":"weekly","ticker":"XLE","sector":"Energy","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-04-11","tf":"weekly","ticker":"XLI","sector":"Industrials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-04-11","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned DOWN in Weakening","crossing":false,"confirmed":false},{"date":"2025-04-11","tf":"weekly","ticker":"XLF","sector":"Financials","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-04-04","tf":"weekly","ticker":"XLRE","sector":"Real Estate","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-04-04","tf":"weekly","ticker":"XLP","sector":"Cons. Staples","body":"Leading \u2192 Weakening","crossing":true,"confirmed":false},{"date":"2025-04-04","tf":"weekly","ticker":"XLF","sector":"Financials","body":"momentum turned UP in Leading","crossing":false,"confirmed":false}],"pad":4.323,"tail":12,"moveW":4,"shapeW":8,"benchmark":"SPY","cmd":"cd /content/rrg-kit/rrg-kit && python3 update.py && python3 make_dashboard.py","title":"US Sector Rotation"};
+
+// &#9472;&#9472; geometry &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+var VIEW = 640, PAD_L = 52, PAD_B = 46, PAD_T = 20, PAD_R = 20;
+var W = VIEW - PAD_L - PAD_R, H = VIEW - PAD_T - PAD_B;
+var LO = 100 - D.pad, HI = 100 + D.pad;
+var px = function (v) { return PAD_L + (v - LO) / (HI - LO) * W; };
+var py = function (v) { return PAD_T + (1 - (v - LO) / (HI - LO)) * H; };
+var ARROWS = ['\u2192','\u2197','\u2191','\u2196','\u2190','\u2199',
+              '\u2193','\u2198'];
+var QORDER = ['Leading','Improving','Weakening','Lagging'];
+
+function quadrant(x, y) {
+  if (x >= 100 && y >= 100) return 'Leading';
+  if (x >= 100) return 'Weakening';
+  return y >= 100 ? 'Improving' : 'Lagging';
+}
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+  });
+}
+function hypot(a, b) { return Math.sqrt(a * a + b * b); }
+
+// Trailing points for one sector up to `idx`, skipping dates it has no bar on.
+function trail(series, idx, n) {
+  var out = [];
+  for (var k = idx; k >= 0 && out.length < n; k--) {
+    if (series.pts[k]) out.unshift({k: k, p: series.pts[k]});
+  }
+  return out;
+}
+
+// velocity / straightness / heading, computed the same way as rrg.py
+function metrics(series, idx) {
+  var pts = trail(series, idx, D.shapeW + 1).map(function (o) { return o.p; });
+  if (!pts.length) return null;
+  var cur = pts[pts.length - 1], out = {x: cur[0], y: cur[1],
+    share: cur[2], vol: cur[3], velocity: 0, straight: 0, heading: 0};
+  var mv = pts.slice(Math.max(0, pts.length - 1 - D.moveW));
+  if (mv.length > 1) {
+    var dx = mv[mv.length - 1][0] - mv[0][0], dy = mv[mv.length - 1][1] - mv[0][1];
+    out.velocity = hypot(dx, dy) / (mv.length - 1);
+    out.heading = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+  }
+  if (pts.length > 1) {
+    var path = 0;
+    for (var i = 1; i < pts.length; i++)
+      path += hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    var net = hypot(pts[pts.length - 1][0] - pts[0][0],
+                    pts[pts.length - 1][1] - pts[0][1]);
+    out.straight = path > 0 ? net / path : 0;
+  }
+  out.rising = pts.length > 1 ? cur[1] > pts[pts.length - 2][1] : false;
+  return out;
+}
+
+// &#9472;&#9472; chart &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+function renderChart(f, idx) {
+  var s = [], cx = px(100), cy = py(100);
+  [['leading', cx, PAD_T, PAD_L + W - cx, cy - PAD_T],
+   ['weakening', cx, cy, PAD_L + W - cx, PAD_T + H - cy],
+   ['lagging', PAD_L, cy, cx - PAD_L, PAD_T + H - cy],
+   ['improving', PAD_L, PAD_T, cx - PAD_L, cy - PAD_T]].forEach(function (q) {
+    s.push('<rect class="q q-' + q[0] + '" x="' + q[1].toFixed(1) + '" y="' +
+      q[2].toFixed(1) + '" width="' + q[3].toFixed(1) + '" height="' +
+      q[4].toFixed(1) + '"/>');
+  });
+  for (var v = Math.ceil(LO); v <= HI; v++) {
+    if (Math.abs(v - 100) < 1e-9) continue;
+    s.push('<line class="grid" x1="' + px(v).toFixed(1) + '" y1="' + PAD_T +
+      '" x2="' + px(v).toFixed(1) + '" y2="' + (PAD_T + H) + '"/>');
+    s.push('<line class="grid" x1="' + PAD_L + '" y1="' + py(v).toFixed(1) +
+      '" x2="' + (PAD_L + W) + '" y2="' + py(v).toFixed(1) + '"/>');
+    s.push('<text class="tick" x="' + px(v).toFixed(1) + '" y="' +
+      (PAD_T + H + 16) + '" text-anchor="middle">' + v + '</text>');
+    s.push('<text class="tick" x="' + (PAD_L - 8) + '" y="' +
+      (py(v) + 3.5).toFixed(1) + '" text-anchor="end">' + v + '</text>');
+  }
+  s.push('<line class="axis" x1="' + cx.toFixed(1) + '" y1="' + PAD_T +
+    '" x2="' + cx.toFixed(1) + '" y2="' + (PAD_T + H) + '"/>');
+  s.push('<line class="axis" x1="' + PAD_L + '" y1="' + cy.toFixed(1) +
+    '" x2="' + (PAD_L + W) + '" y2="' + cy.toFixed(1) + '"/>');
+  s.push('<rect class="frame" x="' + PAD_L + '" y="' + PAD_T + '" width="' +
+    W + '" height="' + H + '"/>');
+  [['IMPROVING', PAD_L + 9, PAD_T + 18, 'start'],
+   ['LEADING', PAD_L + W - 9, PAD_T + 18, 'end'],
+   ['LAGGING', PAD_L + 9, PAD_T + H - 9, 'start'],
+   ['WEAKENING', PAD_L + W - 9, PAD_T + H - 9, 'end']].forEach(function (q) {
+    s.push('<text class="qlabel" x="' + q[1] + '" y="' + q[2] +
+      '" text-anchor="' + q[3] + '">' + q[0] + '</text>');
+  });
+
+  var placed = [], labels = [];
+  f.series.forEach(function (ser) {
+    var tr = trail(ser, idx, D.tail + 1);
+    if (!tr.length) return;
+    var col = 'var(--s' + ser.i + ')';
+    var pl = tr.map(function (o) {
+      return px(o.p[0]).toFixed(1) + ',' + py(o.p[1]).toFixed(1);
+    }).join(' ');
+    s.push('<polyline class="trail" points="' + pl + '" stroke="' + col + '"/>');
+    var last = tr[tr.length - 1].p;
+    var X = px(last[0]), Y = py(last[1]);
+    var rr = 6 + 12 * Math.pow(Math.min(last[2] / 0.25, 1), 0.5);
+    s.push('<g><title>' + esc(ser.t + ' ' + ser.name) + '</title>' +
+      '<circle class="bub" cx="' + X.toFixed(1) + '" cy="' + Y.toFixed(1) +
+      '" r="' + rr.toFixed(1) + '" fill="' + col + '"/></g>');
+
+    var tw = ser.t.length * 6.6 + 3, th = 12;
+    var cands = [[X, Y - rr - 6, 'middle'], [X, Y + rr + 13, 'middle'],
+                 [X + rr + 6, Y + 4, 'start'], [X - rr - 6, Y + 4, 'end']];
+    var pick = null;
+    for (var ci = 0; ci < cands.length; ci++) {
+      var c = cands[ci];
+      var x0 = c[2] === 'middle' ? c[0] - tw / 2
+             : (c[2] === 'start' ? c[0] : c[0] - tw);
+      var box = [x0, c[1] - th, x0 + tw, c[1] + 3];
+      var hit = placed.some(function (o) {
+        return box[0] < o[2] && o[0] < box[2] && box[1] < o[3] && o[1] < box[3];
+      });
+      if (!hit) { pick = {c: c, box: box}; break; }
+    }
+    if (!pick) {
+      var c0 = cands[0], x1 = c0[0] - tw / 2, y1 = c0[1] - th - 2;
+      pick = {c: [c0[0], y1, 'middle'], box: [x1, y1 - th, x1 + tw, y1 + 3]};
+    }
+    placed.push(pick.box);
+    labels.push('<text class="tk" x="' + pick.c[0].toFixed(1) + '" y="' +
+      pick.c[1].toFixed(1) + '" text-anchor="' + pick.c[2] + '">' +
+      ser.t + '</text>');
+  });
+  s = s.concat(labels);
+  s.push('<text class="axlabel" x="' + (PAD_L + W / 2) + '" y="' + (VIEW - 6) +
+    '" text-anchor="middle">RS-RATIO \u00b7 RELATIVE STRENGTH \u2192</text>');
+  s.push('<text class="axlabel" transform="translate(13,' + (PAD_T + H / 2) +
+    ') rotate(-90)" text-anchor="middle">RS-MOMENTUM \u00b7 IMPROVING \u2192</text>');
+
+  document.getElementById('chart').innerHTML =
+    '<svg viewBox="0 0 ' + VIEW + ' ' + VIEW + '" class="rrg" role="img" ' +
+    'aria-label="Relative rotation graph">' + s.join('') + '</svg>';
+}
+
+// &#9472;&#9472; table &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+function rowsFor(f, idx) {
+  var rows = [];
+  f.series.forEach(function (ser) {
+    var m = metrics(ser, idx);
+    if (!m) return;
+    m.ser = ser;
+    m.q = quadrant(m.x, m.y);
+    rows.push(m);
+  });
+  rows.sort(function (a, b) {
+    var d = QORDER.indexOf(a.q) - QORDER.indexOf(b.q);
+    return d !== 0 ? d : b.x - a.x;
+  });
+  return rows;
+}
+
+function renderTable(rows) {
+  var tb = [], cd = [];
+  rows.forEach(function (m) {
+    var conv = (m.velocity >= 0.35 && m.straight >= 0.7) ? 'high'
+             : (m.velocity < 0.15 || m.straight < 0.45) ? 'low' : 'mid';
+    var dir = ARROWS[Math.round(m.heading / 45) % 8] + ' ' +
+              Math.round(m.heading) + '\u00b0';
+    var sw = '<span class="swatch" style="background:var(--s' + m.ser.i +
+             ')"></span>';
+    tb.push('<tr><td class="c-tk">' + sw + '<b>' + m.ser.t +
+      '</b><span class="c-name">' + esc(m.ser.name) + '</span></td>' +
+      '<td><span class="pill p-' + m.q.toLowerCase() + '">' + m.q +
+      '</span></td><td class="num">' + m.x.toFixed(2) +
+      '</td><td class="num">' + m.y.toFixed(2) +
+      '</td><td class="num">' + m.velocity.toFixed(2) +
+      '</td><td class="num conv conv-' + conv + '">' + m.straight.toFixed(2) +
+      '</td><td class="num dir">' + dir + '</td></tr>');
+    cd.push('<div class="card"><div class="card-h">' + sw + '<b>' + m.ser.t +
+      '</b><span class="c-name">' + esc(m.ser.name) +
+      '</span><span class="pill p-' + m.q.toLowerCase() + '">' + m.q +
+      '</span></div><dl class="card-d">' +
+      '<div><dt>Ratio</dt><dd>' + m.x.toFixed(2) + '</dd></div>' +
+      '<div><dt>Mom</dt><dd>' + m.y.toFixed(2) + '</dd></div>' +
+      '<div><dt>Vel</dt><dd>' + m.velocity.toFixed(2) + '</dd></div>' +
+      '<div><dt>Straight</dt><dd>' + m.straight.toFixed(2) + '</dd></div>' +
+      '<div><dt>Dir</dt><dd>' + dir + '</dd></div></dl></div>');
+  });
+  document.getElementById('tbody').innerHTML = tb.join('');
+  document.getElementById('cards').innerHTML = cd.join('');
+}
+
+// &#9472;&#9472; agreement (weekly quadrant vs the daily bar on/just before that date) &#9472;&#9472;&#9472;
+function renderAgreement(isoDate) {
+  var wf = D.frames.weekly, df = D.frames.daily, el = document.getElementById('agrid');
+  if (!wf || !df) { el.innerHTML = ''; return; }
+  var wi = -1;
+  for (var i = 0; i < wf.dates.length; i++) if (wf.dates[i] <= isoDate) wi = i;
+  var di = -1;
+  for (var j = 0; j < df.dates.length; j++) if (df.dates[j] <= isoDate) di = j;
+  if (wi < 0 || di < 0) { el.innerHTML = '<div class="al muted">No daily data ' +
+    'for this date.</div>'; return; }
+
+  var dmap = {};
+  df.series.forEach(function (s) { dmap[s.t] = metrics(s, di); });
+  var out = [];
+  rowsFor(wf, wi).forEach(function (m) {
+    var dm = dmap[m.ser.t];
+    if (!dm) return;
+    var dq = quadrant(dm.x, dm.y);
+    var verdict = m.q === dq ? 'aligned'
+                : (m.rising === dm.rising ? 'partial' : 'diverging');
+    out.push('<div class="ag ag-' + verdict + '"><div class="ag-top"><b>' +
+      m.ser.t + '</b><span class="ag-v">' + verdict + '</span></div>' +
+      '<div class="ag-tf"><span>W</span>' + m.q + '<span>D</span>' + dq +
+      '</div></div>');
+  });
+  el.innerHTML = out.join('');
+}
+
+// &#9472;&#9472; alerts, filtered to the selected date &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+function renderAlerts(isoDate) {
+  var shown = D.alerts.filter(function (a) { return a.date <= isoDate; });
+  var el = document.getElementById('alerts');
+  el.innerHTML = shown.slice(0, 40).map(function (a) {
+    return '<li class="al' + (a.crossing ? ' al-cross' : '') +
+      (a.confirmed ? ' al-conf' : '') + '"><span class="al-d">' + a.date +
+      '</span><span class="al-tf">' + a.tf + '</span><span class="al-t">' +
+      a.ticker + '</span><span class="al-b">' + esc(a.body) + '</span></li>';
+  }).join('') || '<li class="al muted">No alerts on or before this date.</li>';
+  document.getElementById('al-note').textContent =
+    shown.length ? 'on or before ' + isoDate : '';
+  return shown;
+}
+
+// &#9472;&#9472; state &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+var state = {tf: 'weekly', idx: {}};
+Object.keys(D.frames).forEach(function (k) {
+  state.idx[k] = D.frames[k].dates.length - 1;
+});
+
+function render() {
+  var f = D.frames[state.tf], idx = state.idx[state.tf];
+  var iso = f.dates[idx], label = f.dlabels[idx];
+  var last = f.dates.length - 1;
+
+  renderChart(f, idx);
+  var rows = rowsFor(f, idx);
+  renderTable(rows);
+  renderAgreement(iso);
+  var shown = renderAlerts(iso);
+
+  document.getElementById('hdr-date').textContent = label;
+  document.getElementById('tl-date').textContent = label;
+  document.getElementById('st-date').textContent = label;
+  document.getElementById('st-lead').textContent =
+    rows.filter(function (r) { return r.q === 'Leading'; }).length;
+  document.getElementById('st-of').textContent = 'of ' + rows.length;
+  document.getElementById('st-cross').textContent =
+    shown.filter(function (a) { return a.crossing; }).length;
+
+  var back = last - idx;
+  document.getElementById('tl-back').textContent = back === 0 ? 'latest'
+    : back + ' ' + (f.label === 'Weekly' ? 'week' : 'day') +
+      (back === 1 ? '' : 's') + ' back';
+  var sl = document.getElementById('tl');
+  sl.max = last; sl.value = idx;
+  document.getElementById('tl-prev').disabled = idx <= 0;
+  document.getElementById('tl-next').disabled = idx >= last;
+  document.getElementById('tl-last').disabled = idx >= last;
+}
+
+function step(n) {
+  var f = D.frames[state.tf];
+  state.idx[state.tf] = Math.max(0, Math.min(f.dates.length - 1,
+    state.idx[state.tf] + n));
+  render();
+}
+
+document.getElementById('tl').addEventListener('input', function (e) {
+  state.idx[state.tf] = parseInt(e.target.value, 10);
+  render();
+});
+document.getElementById('tl-prev').addEventListener('click', function () { step(-1); });
+document.getElementById('tl-next').addEventListener('click', function () { step(1); });
+document.getElementById('tl-last').addEventListener('click', function () {
+  state.idx[state.tf] = D.frames[state.tf].dates.length - 1; render();
+});
+document.querySelectorAll('[data-go]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    state.tf = b.dataset.go;
+    document.querySelectorAll('[data-go]').forEach(function (o) {
+      o.setAttribute('aria-selected', String(o === b));
+    });
+    render();
+  });
+});
+render();
+
+// &#9472;&#9472; Export for reports &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// The on-page chart is styled with CSS custom properties, which don't survive
+// serialisation. So exports are rebuilt as a standalone SVG with every colour
+// resolved to a literal value and every style as an attribute &#8212; that SVG is
+// valid on its own (vector export) and rasterises cleanly to PNG via canvas.
+// NB: single quotes inside &#8212; these are dropped into font-family="..." on SVG
+// elements, so a double-quoted family name would terminate the attribute and
+// make the document unparseable (and rasterising would fail silently).
+var MONO = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+var SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
+
+function themeColors() {
+  var cs = getComputedStyle(document.documentElement), C = {};
+  ['surface','ground','ink','ink2','muted','line','line2',
+   'leading','improving','weakening','lagging'].forEach(function (n) {
+    C[n] = cs.getPropertyValue('--' + n).trim() || '#888';
+  });
+  C.s = [];
+  for (var i = 0; i < 24; i++) {
+    var v = cs.getPropertyValue('--s' + i).trim();
+    if (v) C.s.push(v);
+  }
+  return C;
+}
+
+function qColor(C, q) { return C[q.toLowerCase()]; }
+
+// chart drawn into the 640-unit space, all styles explicit
+function chartMarkup(f, idx, C) {
+  var s = [], cx = px(100), cy = py(100);
+  [['leading', cx, PAD_T, PAD_L + W - cx, cy - PAD_T],
+   ['weakening', cx, cy, PAD_L + W - cx, PAD_T + H - cy],
+   ['lagging', PAD_L, cy, cx - PAD_L, PAD_T + H - cy],
+   ['improving', PAD_L, PAD_T, cx - PAD_L, cy - PAD_T]].forEach(function (q) {
+    s.push('<rect x="' + q[1].toFixed(1) + '" y="' + q[2].toFixed(1) +
+      '" width="' + q[3].toFixed(1) + '" height="' + q[4].toFixed(1) +
+      '" fill="' + C[q[0]] + '" fill-opacity="0.07"/>');
+  });
+  for (var v = Math.ceil(LO); v <= HI; v++) {
+    if (Math.abs(v - 100) < 1e-9) continue;
+    var gs = ' stroke="' + C.line + '" stroke-width="0.6" stroke-dasharray="2 3"';
+    s.push('<line x1="' + px(v).toFixed(1) + '" y1="' + PAD_T + '" x2="' +
+      px(v).toFixed(1) + '" y2="' + (PAD_T + H) + '"' + gs + '/>');
+    s.push('<line x1="' + PAD_L + '" y1="' + py(v).toFixed(1) + '" x2="' +
+      (PAD_L + W) + '" y2="' + py(v).toFixed(1) + '"' + gs + '/>');
+    var ts = ' fill="' + C.muted + '" font-family="' + MONO + '" font-size="10"';
+    s.push('<text x="' + px(v).toFixed(1) + '" y="' + (PAD_T + H + 16) +
+      '" text-anchor="middle"' + ts + '>' + v + '</text>');
+    s.push('<text x="' + (PAD_L - 8) + '" y="' + (py(v) + 3.5).toFixed(1) +
+      '" text-anchor="end"' + ts + '>' + v + '</text>');
+  }
+  s.push('<line x1="' + cx.toFixed(1) + '" y1="' + PAD_T + '" x2="' +
+    cx.toFixed(1) + '" y2="' + (PAD_T + H) + '" stroke="' + C.line2 +
+    '" stroke-width="0.9"/>');
+  s.push('<line x1="' + PAD_L + '" y1="' + cy.toFixed(1) + '" x2="' +
+    (PAD_L + W) + '" y2="' + cy.toFixed(1) + '" stroke="' + C.line2 +
+    '" stroke-width="0.9"/>');
+  s.push('<rect x="' + PAD_L + '" y="' + PAD_T + '" width="' + W + '" height="' +
+    H + '" fill="none" stroke="' + C.line2 + '" stroke-width="0.7"/>');
+  [['IMPROVING', PAD_L + 9, PAD_T + 18, 'start'],
+   ['LEADING', PAD_L + W - 9, PAD_T + 18, 'end'],
+   ['LAGGING', PAD_L + 9, PAD_T + H - 9, 'start'],
+   ['WEAKENING', PAD_L + W - 9, PAD_T + H - 9, 'end']].forEach(function (q) {
+    s.push('<text x="' + q[1] + '" y="' + q[2] + '" text-anchor="' + q[3] +
+      '" fill="' + C.muted + '" font-family="' + MONO + '" font-size="9.5" ' +
+      'letter-spacing="1.5" opacity="0.8">' + q[0] + '</text>');
+  });
+
+  var placed = [], labels = [];
+  f.series.forEach(function (ser) {
+    var tr = trail(ser, idx, D.tail + 1);
+    if (!tr.length) return;
+    var col = C.s[ser.i % C.s.length];
+    var pl = tr.map(function (o) {
+      return px(o.p[0]).toFixed(1) + ',' + py(o.p[1]).toFixed(1);
+    }).join(' ');
+    s.push('<polyline points="' + pl + '" fill="none" stroke="' + col +
+      '" stroke-width="1.5" stroke-opacity="0.55" stroke-linejoin="round" ' +
+      'stroke-linecap="round"/>');
+    var last = tr[tr.length - 1].p;
+    var X = px(last[0]), Y = py(last[1]);
+    var rr = 6 + 12 * Math.pow(Math.min(last[2] / 0.25, 1), 0.5);
+    s.push('<circle cx="' + X.toFixed(1) + '" cy="' + Y.toFixed(1) + '" r="' +
+      rr.toFixed(1) + '" fill="' + col + '" stroke="' + C.surface +
+      '" stroke-width="1.5"/>');
+
+    var tw = ser.t.length * 6.6 + 3, th = 12;
+    var cands = [[X, Y - rr - 6, 'middle'], [X, Y + rr + 13, 'middle'],
+                 [X + rr + 6, Y + 4, 'start'], [X - rr - 6, Y + 4, 'end']];
+    var pick = null;
+    for (var ci = 0; ci < cands.length; ci++) {
+      var c = cands[ci];
+      var x0 = c[2] === 'middle' ? c[0] - tw / 2
+             : (c[2] === 'start' ? c[0] : c[0] - tw);
+      var box = [x0, c[1] - th, x0 + tw, c[1] + 3];
+      var hit = placed.some(function (o) {
+        return box[0] < o[2] && o[0] < box[2] && box[1] < o[3] && o[1] < box[3];
+      });
+      if (!hit) { pick = {c: c, box: box}; break; }
+    }
+    if (!pick) {
+      var c0 = cands[0], x1 = c0[0] - tw / 2, y1 = c0[1] - th - 2;
+      pick = {c: [c0[0], y1, 'middle'], box: [x1, y1 - th, x1 + tw, y1 + 3]};
+    }
+    placed.push(pick.box);
+    labels.push('<text x="' + pick.c[0].toFixed(1) + '" y="' +
+      pick.c[1].toFixed(1) + '" text-anchor="' + pick.c[2] + '" fill="' +
+      C.ink + '" font-family="' + MONO + '" font-size="10.5" ' +
+      'font-weight="600" paint-order="stroke" stroke="' + C.surface +
+      '" stroke-width="2.6" stroke-linejoin="round">' + ser.t + '</text>');
+  });
+  s = s.concat(labels);
+  var al = ' fill="' + C.muted + '" font-family="' + MONO +
+           '" font-size="9.5" letter-spacing="1.3"';
+  s.push('<text x="' + (PAD_L + W / 2) + '" y="' + (VIEW - 6) +
+    '" text-anchor="middle"' + al + '>RS-RATIO \u00b7 RELATIVE STRENGTH \u2192</text>');
+  s.push('<text transform="translate(13,' + (PAD_T + H / 2) +
+    ') rotate(-90)" text-anchor="middle"' + al +
+    '>RS-MOMENTUM \u00b7 IMPROVING \u2192</text>');
+  return s.join('');
+}
+
+// the ranked table, drawn as SVG so it can live inside the exported figure
+function tableMarkup(rows, C, x, y, rowH) {
+  var cols = [110, 210, 140, 88, 88, 76, 96], s = [];
+  var head = ['SECTOR', '', 'QUADRANT', 'RATIO', 'MOM', 'VEL', 'STRAIGHT', 'DIR'];
+  var xs = [x], acc = x;
+  cols.forEach(function (w) { acc += w; xs.push(acc); });
+  var right = [3, 4, 5, 6, 7];
+
+  // right edge of column i is xs[i] + cols[i] (its OWN width), not cols[i-1]
+  head.forEach(function (h, i) {
+    if (!h) return;
+    var isR = right.indexOf(i) >= 0 && i < cols.length;
+    s.push('<text x="' + (isR ? xs[i] + cols[i] - 8 : xs[i]) + '" y="' + y +
+      '" text-anchor="' + (isR ? 'end' : 'start') + '" fill="' + C.muted +
+      '" font-family="' + MONO + '" font-size="15" letter-spacing="1.6">' +
+      h + '</text>');
+  });
+  s.push('<line x1="' + x + '" y1="' + (y + 14) + '" x2="' + (xs[7] + 110) +
+    '" y2="' + (y + 14) + '" stroke="' + C.line2 + '" stroke-width="1"/>');
+
+  rows.forEach(function (m, r) {
+    var ry = y + 46 + r * rowH;
+    if (r) s.push('<line x1="' + x + '" y1="' + (ry - rowH + 14) + '" x2="' +
+      (xs[7] + 110) + '" y2="' + (ry - rowH + 14) + '" stroke="' + C.line +
+      '" stroke-width="1"/>');
+    var col = C.s[m.ser.i % C.s.length];
+    s.push('<rect x="' + x + '" y="' + (ry - 12) + '" width="12" height="12" ' +
+      'rx="2.5" fill="' + col + '"/>');
+    s.push('<text x="' + (x + 22) + '" y="' + ry + '" fill="' + C.ink +
+      '" font-family="' + MONO + '" font-size="21" font-weight="600">' +
+      m.ser.t + '</text>');
+    s.push('<text x="' + xs[1] + '" y="' + ry + '" fill="' + C.ink2 +
+      '" font-family="' + SANS + '" font-size="19">' + esc(m.ser.name) +
+      '</text>');
+    var qc = qColor(C, m.q);
+    s.push('<rect x="' + xs[2] + '" y="' + (ry - 17) + '" width="126" ' +
+      'height="24" rx="12" fill="none" stroke="' + qc + '" stroke-width="1.2"/>');
+    s.push('<text x="' + (xs[2] + 63) + '" y="' + (ry - 1) +
+      '" text-anchor="middle" fill="' + qc + '" font-family="' + MONO +
+      '" font-size="13" letter-spacing="0.8">' + m.q.toUpperCase() + '</text>');
+
+    var nums = [m.x.toFixed(2), m.y.toFixed(2), m.velocity.toFixed(2),
+                m.straight.toFixed(2)];
+    nums.forEach(function (n, i) {
+      var ci = i + 3;
+      var strong = (ci === 6 && m.velocity >= 0.35 && m.straight >= 0.7);
+      s.push('<text x="' + (xs[ci] + cols[ci] - 8) + '" y="' + ry +
+        '" text-anchor="end" fill="' + (strong ? C.leading : C.ink) +
+        '" font-family="' + MONO + '" font-size="21"' +
+        (strong ? ' font-weight="600"' : '') + '>' + n + '</text>');
+    });
+    var dir = ARROWS[Math.round(m.heading / 45) % 8] + ' ' +
+              Math.round(m.heading) + '\u00b0';
+    s.push('<text x="' + (xs[7] + 106) + '" y="' + ry + '" text-anchor="end" ' +
+      'fill="' + C.ink2 + '" font-family="' + MONO + '" font-size="21">' +
+      dir + '</text>');
+  });
+  return s.join('');
+}
+
+function buildExport(mode) {
+  var f = D.frames[state.tf], idx = state.idx[state.tf];
+  var C = themeColors(), rows = rowsFor(f, idx);
+  var when = f.dlabels[idx], iso = f.dates[idx];
+  var sub = f.label.toUpperCase() + '  \u00b7  VS ' + D.benchmark.toUpperCase() +
+            '  \u00b7  ' + when.toUpperCase();
+  var foot = 'JdK RS-Ratio vs RS-Momentum (standard public approximation) ' +
+             '\u00b7 bubble = share of universe dollar volume \u00b7 tail = ' +
+             D.tail + ' periods \u00b7 source: Yahoo Finance';
+  var g = [], w, h, cw, cx0, cy0;
+
+  if (mode === 'chart') {
+    w = 1240; h = 1400; cw = 1128; cx0 = 56; cy0 = 150;
+  } else {
+    w = 1920; h = 1080; cw = 830; cx0 = 56; cy0 = 176;
+  }
+  g.push('<rect width="' + w + '" height="' + h + '" fill="' + C.ground + '"/>');
+  g.push('<text x="64" y="' + (mode === 'chart' ? 84 : 90) + '" fill="' + C.ink +
+    '" font-family="' + SANS + '" font-size="' + (mode === 'chart' ? 40 : 46) +
+    '" font-weight="650" letter-spacing="-0.8">' + esc(D.title) + '</text>');
+  g.push('<text x="64" y="' + (mode === 'chart' ? 116 : 126) + '" fill="' +
+    C.muted + '" font-family="' + MONO + '" font-size="' +
+    (mode === 'chart' ? 16 : 19) + '" letter-spacing="2">' + sub + '</text>');
+  g.push('<line x1="64" y1="' + (mode === 'chart' ? 136 : 152) + '" x2="' +
+    (w - 64) + '" y2="' + (mode === 'chart' ? 136 : 152) + '" stroke="' +
+    C.line + '" stroke-width="1"/>');
+
+  var sc = cw / VIEW;
+  g.push('<g transform="translate(' + cx0 + ',' + cy0 + ') scale(' +
+    sc.toFixed(4) + ')">' + chartMarkup(f, idx, C) + '</g>');
+
+  if (mode === 'report') {
+    g.push(tableMarkup(rows, C, 960, 210, 68));
+  }
+  g.push('<text x="64" y="' + (h - 34) + '" fill="' + C.muted +
+    '" font-family="' + MONO + '" font-size="15">' + foot + '</text>');
+
+  return {
+    w: w, h: h,
+    name: 'rrg_' + mode + '_' + state.tf + '_' + iso,
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' +
+      h + '" viewBox="0 0 ' + w + ' ' + h + '">' + g.join('') + '</svg>'
+  };
+}
+
+// Embedded (iframe) views sandbox downloads away, so a[download] silently
+// does nothing there. Detect it and offer the image inline instead.
+var EMBEDDED = (function () {
+  try { return window.self !== window.top; } catch (e) { return true; }
+})();
+
+// Rasterise to a canvas. Data URIs throughout: some hosts' CSP blocks blob:
+// under img-src, and a[download] with a blob: URL is likewise unreliable in
+// sandboxed frames.
+function rasterise(spec, scale) {
+  var src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(spec.svg);
+  return new Promise(function (res, rej) {
+    var img = new Image();
+    img.onload = function () {
+      var cv = document.createElement('canvas');
+      cv.width = Math.round(spec.w * scale);
+      cv.height = Math.round(spec.h * scale);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      res(cv);
+    };
+    img.onerror = function () {
+      rej(new Error('could not rasterise the chart'));
+    };
+    img.src = src;
+  });
+}
+
+function toPNG(spec, scale) {
+  return rasterise(spec, scale).then(function (cv) {
+    return new Promise(function (res, rej) {
+      cv.toBlob(function (b) {
+        b ? res(b) : rej(new Error('canvas export failed'));
+      }, 'image/png');
+    });
+  });
+}
+
+function toPNGURL(spec, scale) {
+  return rasterise(spec, scale).then(function (cv) {
+    return {url: cv.toDataURL('image/png'), w: cv.width, h: cv.height};
+  });
+}
+
+// Best-effort download. Returns false when we know it cannot work.
+function download(url, filename) {
+  if (EMBEDDED) return false;
+  var a = document.createElement('a');
+  a.href = url; a.download = filename; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+  return true;
+}
+
+// The fallback that always works: put the finished image on the page so it
+// can be saved with the browser's own right-click / long-press.
+function showResult(url, filename, dims, isSvg) {
+  var box = document.getElementById('exp-out');
+  box.innerHTML = '';
+  var hint = document.createElement('p');
+  hint.className = 'exp-hint';
+  hint.textContent = EMBEDDED
+    ? 'This view blocks automatic downloads. Right-click the image below and '
+      + 'choose \u201cSave image as\u2026\u201d (long-press on mobile), or '
+      + 'use Copy figure to paste it straight into your deck.'
+    : 'Saved as ' + filename + '. Right-click below to save again.';
+  box.appendChild(hint);
+
+  if (isSvg) {
+    var a = document.createElement('a');
+    a.href = url; a.download = filename; a.className = 'exp-link';
+    a.textContent = 'Right-click \u2192 Save link as\u2026 ' + filename;
+    box.appendChild(a);
+  } else {
+    var im = document.createElement('img');
+    im.src = url; im.alt = 'Exported figure, ' + dims;
+    im.className = 'exp-img';
+    box.appendChild(im);
+    var cap = document.createElement('p');
+    cap.className = 'exp-cap';
+    cap.textContent = filename + '  \u00b7  ' + dims;
+    box.appendChild(cap);
+  }
+  var close = document.createElement('button');
+  close.type = 'button'; close.className = 'exp-close';
+  close.textContent = 'Close preview';
+  close.addEventListener('click', function () { box.innerHTML = ''; });
+  box.appendChild(close);
+  box.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+}
+
+(function () {
+  var out = document.getElementById('exp-msg');
+  var note = function (t, err) {
+    out.textContent = t;
+    out.className = 'exp-msg' + (err ? ' err' : '');
+    clearTimeout(note.t);
+    note.t = setTimeout(function () { out.textContent = ''; }, 4000);
+  };
+  document.querySelectorAll('[data-exp]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var kind = b.dataset.exp;
+      var scale = parseInt(document.getElementById('exp-x').value, 10) || 2;
+      var spec = buildExport(kind === 'chart' ? 'chart' : 'report');
+
+      if (kind === 'svg') {
+        var url = 'data:image/svg+xml;charset=utf-8,' +
+                  encodeURIComponent(spec.svg);
+        var name = spec.name + '.svg';
+        var did = download(url, name);
+        showResult(url, name, '', true);
+        return note(did ? 'SVG saved \u2014 vector, scales to any size'
+                        : 'Download blocked here \u2014 save from the link below');
+      }
+
+      b.disabled = true;
+      note('Rendering\u2026');
+
+      if (kind === 'copy') {
+        return toPNG(spec, scale).then(function (blob) {
+          if (!(navigator.clipboard && window.ClipboardItem &&
+                window.isSecureContext)) throw new Error('clipboard unavailable');
+          return navigator.clipboard.write([
+            new ClipboardItem({'image/png': blob})
+          ]).then(function () {
+            note('Copied \u2014 paste into your deck');
+          });
+        }).catch(function () {
+          // clipboard refused (permission, or an embedded view) &#8212; fall back
+          return toPNGURL(spec, scale).then(function (r) {
+            showResult(r.url, spec.name + '.png', r.w + '\u00d7' + r.h, false);
+            note('Clipboard blocked \u2014 save the image below instead', true);
+          });
+        }).then(function () { b.disabled = false; });
+      }
+
+      toPNGURL(spec, scale).then(function (r) {
+        var name = spec.name + '.png', dims = r.w + '\u00d7' + r.h;
+        var did = download(r.url, name);
+        showResult(r.url, name, dims, false);
+        note(did ? 'Saved ' + name + ' (' + dims + ')'
+                 : 'Download blocked here \u2014 save the image below');
+      }).catch(function (e) {
+        note('Export failed: ' + e.message, true);
+      }).then(function () { b.disabled = false; });
+    });
+  });
+})();
+
+// &#9472;&#9472; Update button &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// Static pages can't run Python. When served by serve.py an API is present and
+// the button re-runs the pipeline for real; otherwise it degrades to handing
+// over the command to run.
+(function () {
+  if (!document.querySelector('meta[name="viewport"]')) {
+    var mv = document.createElement('meta');
+    mv.name = 'viewport';
+    mv.content = 'width=device-width, initial-scale=1';
+    document.head.appendChild(mv);
+  }
+  var btn = document.getElementById('upd');
+  var label = document.getElementById('upd-label');
+  var msg = document.getElementById('upd-msg');
+  var live = false;
+
+  function say(text, cls, cmd) {
+    msg.className = 'updmsg' + (cls ? ' ' + cls : '');
+    msg.textContent = text;
+    if (cmd) {
+      var c = document.createElement('code');
+      c.textContent = cmd;
+      msg.appendChild(document.createElement('br'));
+      msg.appendChild(c);
+    }
+    msg.hidden = false;
+  }
+  function mode(m, text) {
+    btn.dataset.mode = m; label.textContent = text;
+    btn.disabled = (m === 'busy');
+  }
+  function ask(path, opts) {
+    var ctl = new AbortController();
+    var t = setTimeout(function () { ctl.abort(); }, 4000);
+    opts = opts || {}; opts.signal = ctl.signal; opts.cache = 'no-store';
+    return fetch(path, opts).then(function (r) {
+      clearTimeout(t);
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.json();
+    });
+  }
+  ask('api/status').then(function (s) {
+    live = !!(s && s.live);
+    mode(live ? 'live' : 'static',
+         live ? 'Update data' : 'Copy refresh command');
+    if (live && s.running) poll();
+  }).catch(function () { mode('static', 'Copy refresh command'); });
+
+  function poll() {
+    mode('busy', 'Updating\u2026');
+    say('Downloading prices and rebuilding charts. This takes about half a minute.');
+    (function tick() {
+      setTimeout(function () {
+        ask('api/status').then(function (s) {
+          if (s.running) return tick();
+          if (s.error) { mode('live', 'Update data');
+            say('Update failed: ' + s.error, 'err'); }
+          else { say('Updated. Reloading\u2026', 'ok'); location.reload(); }
+        }).catch(function () { tick(); });
+      }, 1500);
+    })();
+  }
+  btn.addEventListener('click', function () {
+    if (!live) {
+      var done = function () {
+        say('Run this in Terminal, then reload this page:', null, D.cmd);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(D.cmd).then(function () {
+          say('Command copied. Run it in Terminal, then reload this page:',
+              'ok', D.cmd);
+        }).catch(done);
+      } else { done(); }
+      return;
+    }
+    mode('busy', 'Updating\u2026');
+    ask('api/refresh', {method: 'POST'}).then(poll).catch(function (e) {
+      mode('live', 'Update data');
+      say('Could not start the update: ' + e.message, 'err');
+    });
+  });
+})();
+</script>
+</body>
+</html>
