@@ -1,0 +1,82 @@
+name: Update RRG
+
+# Lunes a viernes 22:30 UTC (16:30 CDMX, despues del cierre de EE. UU.).
+# Tambien se puede correr a mano desde la pestaña Actions ("Run workflow").
+on:
+  schedule:
+    - cron: "30 22 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write          # para hacer commit de docs/dashboard.html en este repo
+
+concurrency:
+  group: update-rrg
+  cancel-in-progress: false
+
+env:
+  # Version de rrg-kit fijada (probada el 1-oct-2026, mismo layout que la pagina publicada).
+  # Si se cambia, revisar el recorte del iframe en report.py.
+  RRG_KIT_COMMIT: fb34a8072e160c01fce6e9c5f3985d8309a514b9
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Clonar rrg-kit (version fijada)
+        run: |
+          git clone https://github.com/milesfai/rrg-kit.git rrg-kit
+          git -C rrg-kit checkout "$RRG_KIT_COMMIT"
+
+      - name: Instalar dependencias
+        run: pip install -r rrg-kit/requirements.txt
+
+      # Yahoo Finance a veces limita las IP de GitHub: 3 intentos con espera.
+      - name: Calcular y armar el RRG
+        working-directory: rrg-kit
+        run: |
+          set -uo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if python3 update.py --universe sectors && \
+               python3 make_dashboard.py --universe sectors; then
+              ok=1; break
+            fi
+            echo "::warning::intento $attempt/3 fallo, reintentando"
+            sleep $((attempt * 30))
+          done
+          [ "$ok" = 1 ] || { echo "::error::rrg-kit fallo 3 veces"; exit 1; }
+
+      - name: Recortar
+        run: python3 trim_dashboard.py rrg-kit/output/sectors/dashboard.html rrg-kit/output/sectors/dashboard_embed.html
+
+      # Si algo salio mal, no se publica encima de la pagina buena.
+      - name: Verificar
+        run: |
+          set -euo pipefail
+          f=rrg-kit/output/sectors/dashboard_embed.html
+          test -s "$f"
+          size=$(stat -c%s "$f"); [ "$size" -gt 100000 ] || { echo "pagina muy chica ($size bytes)"; exit 1; }
+          grep -q "<h2>Rotation map</h2>" "$f"
+          [ "$(grep -c 'style="display:none">' "$f")" -ge 2 ]
+          echo "OK: $size bytes"
+
+      - name: Publicar en docs/
+        run: |
+          mkdir -p docs
+          cp rrg-kit/output/sectors/dashboard_embed.html docs/dashboard.html
+          git config user.name "rrg-bot"
+          git config user.email "rrg-bot@users.noreply.github.com"
+          git add docs/dashboard.html
+          if git diff --cached --quiet; then
+            echo "sin cambios"
+          else
+            git commit -m "RRG update $(date -u +%F)"
+            git push
+          fi
